@@ -1,0 +1,17 @@
+﻿<Window x:Class="nature_net.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:uc="clr-namespace:nature_net.user_controls"
+        Title="Nature Net" Height="200" Width="800" Name="main_window" WindowStyle="None" WindowState="Maximized">
+    
+    <DockPanel LastChildFill="True">
+        <uc:users_listbox x:Name="users_listbox" DockPanel.Dock="Left" Width="220">
+        </uc:users_listbox>
+        <uc:design_ideas_listbox x:Name="design_ideas_listbox" DockPanel.Dock="Right" Width="220">
+        </uc:design_ideas_listbox>
+        <Canvas Name="workspace">
+            
+        </Canvas>
+    </DockPanel>
+    
+</Window>

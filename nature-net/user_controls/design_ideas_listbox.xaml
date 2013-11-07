@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="nature_net.user_controls.design_ideas_listbox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+    
+    <DockPanel LastChildFill="True">
+        <Label Name="desc" Height="50" DockPanel.Dock="Top" Background="Green" Foreground="White"
+               HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+            Design Ideas
+        </Label>
+        <Button Name="submit" Height="50" DockPanel.Dock="Bottom">Submit Design Idea</Button>
+        <ListBox Name="design_ideas" DockPanel.Dock="Top"
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                 ScrollViewer.PanningMode="VerticalOnly"></ListBox>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,38 @@
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\bin\Debug\nature-net.exe
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\bin\Debug\nature-net.pdb
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\ResolveAssemblyReference.cache
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\MainWindow.baml
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\MainWindow.g.cs
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\App.g.cs
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\nature-net_MarkupCompile.cache
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\nature-net.g.resources
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\nature_net.Properties.Resources.resources
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\GenerateResource.read.1.tlog
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\GenerateResource.write.1.tlog
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\nature-net.exe
+c:\users\mj\documents\visual studio 2010\Projects\nature-net\nature-net\obj\x86\Debug\nature-net.pdb
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\bin\Debug\nature-net.exe.config
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\bin\Debug\nature-net.exe
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\bin\Debug\nature-net.pdb
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\design_ideas_listbox.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\item_generic.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\window_frame.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\main_window.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\collection_window.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\design_ideas_listbox.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\item_generic.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\users_listbox.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\window_frame.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net_MarkupCompile.cache
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net_MarkupCompile.lref
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\main_window.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\collection_window.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\users_listbox.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.g.resources
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature_net.Properties.Resources.resources
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.exe
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.pdb
