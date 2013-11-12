@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation"
              mc:Ignorable="d" 
              d:DesignWidth="300">
     
@@ -12,8 +13,9 @@
             Design Ideas
         </Label>
         <Button Name="submit" Height="50" DockPanel.Dock="Bottom">Submit Design Idea</Button>
-        <ListBox Name="design_ideas" DockPanel.Dock="Top"
+        <s:SurfaceListBox Name="design_ideas" DockPanel.Dock="Top"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.PanningMode="VerticalOnly"></ListBox>
+                 ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="VerticalOnly">
+        </s:SurfaceListBox>
     </DockPanel>
 </UserControl>

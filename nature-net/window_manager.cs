@@ -7,6 +7,8 @@ using nature_net.user_controls;
 using System.Windows;
 using System.Windows.Media;
 using System.ComponentModel;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace nature_net
 {
@@ -14,7 +16,13 @@ namespace nature_net
     {
         public static Canvas main_canvas;
         public static List<BalloonDecorator> balloons = new List<BalloonDecorator>();
+        public static List<int> downloaded_contributions = new List<int>();
         public static Dictionary<int, ImageSource> thumbnails = new Dictionary<int, ImageSource>();
+        public static Dictionary<int, ImageSource> contributions = new Dictionary<int, ImageSource>();
+        public static List<window_frame> collection_frames = new List<window_frame>();
+        public static List<window_frame> signup_frames = new List<window_frame>();
+        public static List<window_frame> design_ideas_frames = new List<window_frame>();
+        public static List<window_frame> image_display_frames = new List<window_frame>();
 
         public static void open_collections_balloon(double y, string username)
         {
@@ -67,7 +75,7 @@ namespace nature_net
             {
                 l.Items.Add("All Collections");
                 s2.Children.Add(l);
-                l.SelectionChanged += new SelectionChangedEventHandler(open_collection_window);
+                //l.SelectionChanged += new SelectionChangedEventHandler(open_collection_window);
             }
             else
             {
@@ -85,48 +93,128 @@ namespace nature_net
             b.RenderTransform = trans;
         }
 
-        static void open_collection_window(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count == 0) return;
-            ListBox l = (ListBox)sender;
-            BalloonDecorator bd = (BalloonDecorator)l.Tag;
-            List<int> ids = (List<int>)bd.Tag;
-            main_canvas.Children.Remove(bd);
-            window_manager.balloons.Remove(bd);
-
-            //naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
-            //List<Contribution> medias;
-            //if (e.AddedItems[0].GetType().Name == "string")
-            //{
-            //    var result = from m in db.Contributions
-            //            where ids.Contains(m.collection_id)
-            //            select m;
-            //    medias = result.ToList<Media>();
-            //}
-            //else
-            //{
-            //    Collection c = (Collection)e.AddedItems[0];
-            //    var result = from m in db.Medias
-            //            where c.id == m.collection_id
-            //            select m;
-            //    medias = result.ToList<Media>();
-            //}
-
-            //foreach (Media m in medias)
-            //{
-            //    if (!thumbnails.ContainsKey(m.id))
-            //    {
-            //        //load the thumbnail of media with id = m.id
-            //    }
-            //}
-        }
-
         public static void close_collections_balloon(object sender, RoutedEventArgs e)
         {
             Button b = (Button)sender;
             BalloonDecorator bd = (BalloonDecorator)b.Tag;
             main_canvas.Children.Remove(bd);
             window_manager.balloons.Remove(bd);
+        }
+
+        public static void open_collection_window(string username, int userid, double pos_x, double pos_y)
+        {
+            if (window_manager.collection_frames.Count + 1 > configurations.max_collection_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            window_content content = new window_content();
+            collection_listbox c_listbox = new collection_listbox();
+            c_listbox.list_all_images(username);
+            content.initialize_contents(c_listbox, Type.GetType("User"), userid);
+            frame.window_content.Content = content;
+            content.list_all_comments();
+
+            window_manager.collection_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            frame.set_title(username + "'s contributions");
+        }
+
+        public static void open_image_window(int contribution_id, double pos_x, double pos_y)
+        {
+            if (window_manager.image_display_frames.Count + 1 > configurations.max_image_display_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            window_content content = new window_content();
+            image_view img = new image_view();
+            img.view_image(contribution_id);
+            content.initialize_contents(img, Type.GetType("Contribution"), contribution_id);
+            frame.window_content.Content = content;
+            content.list_all_comments();
+            window_manager.image_display_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            img.center_image();
+            frame.hide_change_view();
+            frame.set_title("Image");
+        }
+
+        public static void open_design_idea_window(int contribution_id, double pos_x, double pos_y)
+        {
+            if (window_manager.design_ideas_frames.Count + 1 > configurations.max_design_ideas_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            window_content content = new window_content();
+            //image_view img = new image_view();
+            //img.view_image(contribution_id);
+            //content.initialize_contents(img, Type.GetType("Contribution"), contribution_id);
+            frame.window_content.Content = content;
+            content.list_all_comments();
+
+            window_manager.design_ideas_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            frame.hide_change_view();
+            frame.set_title("Design Idea");
+        }
+
+        public static void open_signup_window(double pos_x, double pos_y)
+        {
+            if (window_manager.signup_frames.Count + 1 > configurations.max_signup_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            //window_content content = new window_content();
+            //image_view img = new image_view();
+            //img.view_image(contribution_id);
+            //content.initialize_contents(img, Type.GetType("Contribution"), contribution_id);
+            //frame.window_content.Content = content;
+            //content.list_all_comments();
+
+            window_manager.signup_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            frame.hide_change_view();
+            frame.set_title("Sign up");
+        }
+
+        private static void open_window(window_frame frame, double pos_x, double pos_y)
+        {
+            main_canvas.Children.Add(frame);
+            frame.IsManipulationEnabled = true;
+            frame.UpdateLayout();
+
+            if (pos_y > window_manager.main_canvas.ActualHeight - frame.ActualHeight)
+                pos_y = window_manager.main_canvas.ActualHeight - frame.ActualHeight;
+            TranslateTransform m = new TranslateTransform(pos_x, pos_y);
+            Matrix matrix = m.Value;
+            frame.RenderTransform = new MatrixTransform(matrix);
+        }
+
+        public static void close_window(window_frame frame)
+        {
+            collection_frames.Remove(frame);
+            image_display_frames.Remove(frame);
+            signup_frames.Remove(frame);
+            design_ideas_frames.Remove(frame);
+            main_canvas.Children.Remove(frame);
+        }
+
+        public static void refresh_downloaded_contributions()
+        {
+            DirectoryInfo d = new DirectoryInfo(configurations.GetAbsoluteContributionPath());
+            FileInfo[] files = d.GetFiles();
+            window_manager.downloaded_contributions.Clear();
+            foreach (FileInfo f in files)
+                window_manager.downloaded_contributions.Add(Convert.ToInt32(f.Name.Substring(0, f.Name.Length - 4)));
+        }
+
+        public static void refresh_thumbnails()
+        {
+            DirectoryInfo d = new DirectoryInfo(configurations.GetAbsoluteThumbnailPath());
+            FileInfo[] files = d.GetFiles();
+            window_manager.thumbnails.Clear();
+            foreach (FileInfo f in files)
+                window_manager.thumbnails.Add(Convert.ToInt32(f.Name.Substring(0, f.Name.Length - 4)),
+                    new BitmapImage(new Uri(configurations.GetAbsoluteThumbnailPath() + f.Name)));
         }
     }
 

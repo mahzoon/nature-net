@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 
-6326909042
+8-1100327831
 
-171526959633
-15144597438
-main_window.xaml;user_controls\collection_window.xaml;user_controls\design_ideas_listbox.xaml;user_controls\item_generic.xaml;user_controls\users_listbox.xaml;user_controls\window_frame.xaml;
+19-1473126274
+18-1386301576
+main_window.xaml;user_controls\collection_listbox.xaml;user_controls\design_ideas_listbox.xaml;user_controls\image_view.xaml;user_controls\item_generic.xaml;user_controls\users_listbox.xaml;user_controls\window_content.xaml;user_controls\window_frame.xaml;
 
-True
+False
 

@@ -30,6 +30,10 @@ namespace nature_net.user_controls
             this.topright_panel.Margin = new Thickness(10, 0, 10, 0);
             this.desc.Margin = new Thickness(10, 0, 10, 0);
             this.content.Margin = new Thickness(10, 0, 10, 10);
+            this.username.FontFamily = new FontFamily("Segoe UI"); this.username.FontSize = 12;
+            this.user_desc.FontFamily = new FontFamily("Segoe UI"); this.user_desc.FontSize = 12;
+            this.desc.FontFamily = new FontFamily("Segoe UI"); this.desc.FontSize = 12;
+            this.content.FontFamily = new FontFamily("Segoe UI"); this.content.FontSize = 12;
         }
 
         public void set_touchevent(manipulation_starting_handler start_handler, manipulation_delta_handler delta_handler)

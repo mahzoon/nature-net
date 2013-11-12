@@ -19,16 +19,6 @@ namespace nature_net.user_controls
     /// </summary>
     public partial class window_frame : UserControl
     {
-        public object WindowContent
-        {
-            get { return GetValue(WindowContentProperty); }
-            set { SetValue(WindowContentProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty WindowContentProperty =
-            DependencyProperty.Register("WindowContent", typeof(object), typeof(window_frame), null);
-
         public window_frame()
         {
             InitializeComponent();
@@ -47,8 +37,43 @@ namespace nature_net.user_controls
             this.close.Background = b1;
             var b2 = new ImageBrush();
             b2.ImageSource = configurations.img_change_view_stack_icon;
-            this.close.Background = b2;
+            this.change_view.Background = b2;
             this.window_icon.Source = configurations.img_collection_window_icon;
+
+            this.close.Click += new RoutedEventHandler(close_Click);
+            this.close.TouchDown += new EventHandler<TouchEventArgs>(close_TouchUp);
+            this.change_view.Click += new RoutedEventHandler(change_view_Click);
+            this.change_view.TouchUp += new EventHandler<TouchEventArgs>(change_view_TouchUp);
+        }
+
+        public void set_title(string t)
+        {
+            this.title.Content = t;
+        }
+
+        public void hide_change_view()
+        {
+            this.change_view.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        void change_view_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+        
+        void change_view_TouchUp(object sender, TouchEventArgs e)
+        {
+
+        }
+
+        void close_TouchUp(object sender, TouchEventArgs e)
+        {
+            window_manager.close_window(this);
+        }
+
+        void close_Click(object sender, RoutedEventArgs e)
+        {
+            window_manager.close_window(this);
         }
     }
 }

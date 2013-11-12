@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="nature_net.user_controls.window_content"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignWidth="300">
+    <DockPanel LastChildFill="False">
+        <ContentControl Name="the_item" DockPanel.Dock="Top"></ContentControl>
+        <ListBox Name="comments_listbox" DockPanel.Dock="Top" Height="150"
+                 ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                 ScrollViewer.PanningMode="VerticalOnly"></ListBox>
+        <Image Name="add_comment_img" Height="75" Stretch="Fill" ></Image>
+    </DockPanel>
+</UserControl>

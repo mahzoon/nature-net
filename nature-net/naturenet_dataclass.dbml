@@ -8,23 +8,6 @@
       <Association Name="Action_Type_Action" Member="Actions" ThisKey="id" OtherKey="type_id" Type="Action" />
     </Type>
   </Table>
-  <Table Name="dbo.Feedback" Member="Feedbacks">
-    <Type Name="Feedback">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="note" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
-      <Column Name="date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="type_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="parent_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="object_type" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
-      <Column Name="object" Type="System.Data.Linq.Binary" DbType="Binary(1)" CanBeNull="true" UpdateCheck="Never" />
-      <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Association Name="Feedback_Feedback" Member="Feedbacks" ThisKey="id" OtherKey="parent_id" Type="Feedback" />
-      <Association Name="Feedback_Feedback" Member="Feedback1" ThisKey="parent_id" OtherKey="id" Type="Feedback" IsForeignKey="true" />
-      <Association Name="Feedback_Type_Feedback" Member="Feedback_Type" ThisKey="type_id" OtherKey="id" Type="Feedback_Type" IsForeignKey="true" />
-      <Association Name="User_Feedback" Member="User" ThisKey="user_id" OtherKey="id" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
   <Table Name="dbo.Feedback_Type" Member="Feedback_Types">
     <Type Name="Feedback_Type">
       <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -102,9 +85,9 @@
       <Column Name="password" Type="System.String" DbType="NChar(128)" CanBeNull="true" />
       <Column Name="avatar" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
       <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Association Name="User_Feedback" Member="Feedbacks" ThisKey="id" OtherKey="user_id" Type="Feedback" />
       <Association Name="User_Collection" Member="Collections" ThisKey="id" OtherKey="user_id" Type="Collection" />
       <Association Name="User_Action" Member="Actions" ThisKey="id" OtherKey="user_id" Type="Action" />
+      <Association Name="User_Feedback" Member="Feedbacks" ThisKey="id" OtherKey="user_id" Type="Feedback" />
     </Type>
   </Table>
   <Table Name="dbo.Design_Ideas" Member="Design_Ideas">
@@ -131,6 +114,24 @@
       <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="Action_Type_Action" Member="Action_Type" ThisKey="type_id" OtherKey="id" Type="Action_Type" IsForeignKey="true" />
       <Association Name="User_Action" Member="User" ThisKey="user_id" OtherKey="id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Feedback" Member="Feedbacks">
+    <Type Name="Feedback">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="note" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
+      <Column Name="date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="type_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="parent_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="object_type" Type="System.String" DbType="NVarChar(64) NOT NULL" CanBeNull="false" />
+      <Column Name="object" Type="System.Data.Linq.Binary" DbType="Binary(1)" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="object_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="Feedback_Feedback" Member="Feedbacks" ThisKey="id" OtherKey="parent_id" Type="Feedback" />
+      <Association Name="Feedback_Feedback" Member="Feedback1" ThisKey="parent_id" OtherKey="id" Type="Feedback" IsForeignKey="true" />
+      <Association Name="Feedback_Type_Feedback" Member="Feedback_Type" ThisKey="type_id" OtherKey="id" Type="Feedback_Type" IsForeignKey="true" />
+      <Association Name="User_Feedback" Member="User" ThisKey="user_id" OtherKey="id" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

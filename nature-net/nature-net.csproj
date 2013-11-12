@@ -54,6 +54,9 @@
     <StartupObject>nature_net.program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Surface, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Surface.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Surface.Presentation, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
@@ -81,17 +84,23 @@
     </Compile>
     <Compile Include="program.cs" />
     <Compile Include="user_controls\BalloonDecorator.cs" />
-    <Compile Include="user_controls\collection_window.xaml.cs">
-      <DependentUpon>collection_window.xaml</DependentUpon>
+    <Compile Include="user_controls\collection_listbox.xaml.cs">
+      <DependentUpon>collection_listbox.xaml</DependentUpon>
     </Compile>
     <Compile Include="user_controls\design_ideas_listbox.xaml.cs">
       <DependentUpon>design_ideas_listbox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="user_controls\image_view.xaml.cs">
+      <DependentUpon>image_view.xaml</DependentUpon>
     </Compile>
     <Compile Include="user_controls\item_generic.xaml.cs">
       <DependentUpon>item_generic.xaml</DependentUpon>
     </Compile>
     <Compile Include="user_controls\users_listbox.xaml.cs">
       <DependentUpon>users_listbox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="user_controls\window_content.xaml.cs">
+      <DependentUpon>window_content.xaml</DependentUpon>
     </Compile>
     <Compile Include="user_controls\window_frame.xaml.cs">
       <DependentUpon>window_frame.xaml</DependentUpon>
@@ -106,11 +115,15 @@
       <DependentUpon>main_window.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="user_controls\collection_window.xaml">
+    <Page Include="user_controls\collection_listbox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="user_controls\design_ideas_listbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="user_controls\image_view.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="user_controls\users_listbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="user_controls\window_content.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
