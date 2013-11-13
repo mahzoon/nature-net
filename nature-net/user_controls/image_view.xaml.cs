@@ -81,6 +81,7 @@ namespace nature_net.user_controls
             catch (Exception exc)
             {
                 /// write log
+                e.Result = -1;
             }
         }
 
@@ -89,7 +90,10 @@ namespace nature_net.user_controls
             this.the_image.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                 new System.Action(() =>
                 {
-                    the_image.Source = window_manager.contributions[(int)e.Result];
+                    if ((int)e.Result == -1)
+                        the_image.Source = configurations.img_not_found_image_pic;
+                    else
+                        the_image.Source = window_manager.contributions[(int)e.Result];
                     the_image.UpdateLayout();
                     var matrix = ((MatrixTransform)image_canvas.RenderTransform).Matrix;
                     matrix.OffsetX = matrix.OffsetX + (image_canvas.ActualWidth / 2) - (the_image.ActualWidth / 2);

@@ -159,6 +159,13 @@ namespace nature_net.user_controls
                            img.Tag = i;
                            this.contributions.Items.Add(img);
                        }
+                       else
+                       {
+                           Image img = new Image();
+                           img.Source = configurations.img_not_found_image_pic;
+                           img.Tag = i;
+                           this.contributions.Items.Add(img);
+                       }
                    }
                    if (contribution_ids.Count == 0)
                    {

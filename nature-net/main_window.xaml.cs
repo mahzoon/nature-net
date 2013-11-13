@@ -42,6 +42,20 @@ namespace nature_net
 
             this.workspace.AllowDrop = true;
             SurfaceDragDrop.AddDropHandler(this.workspace, new EventHandler<SurfaceDragDropEventArgs>(item_droped_on_workspace));
+
+            application_panel.PreviewTouchDown += new EventHandler<TouchEventArgs>(application_panel_PreviewTouchDown);
+        }
+
+        void application_panel_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            Microsoft.Surface.Presentation.Input.InteractiveSurfaceDevice isd = Microsoft.Surface.Presentation.Input.InteractiveSurface.PrimarySurfaceDevice;
+            bool finger_supported = isd.IsFingerRecognitionSupported;
+            bool finger = Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice);
+            //bool blob = Microsoft.Surface.Presentation.Input.TouchExtensions.(e.TouchDevice);
+            bool tag = Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsTagRecognized(e.TouchDevice);
+
+            //if (!finger && finger_supported)
+            //    e.Handled = true;
         }
 
         void item_droped_on_workspace(object sender, SurfaceDragDropEventArgs e)

@@ -16,5 +16,5 @@ DEBUG;TRACE
 20406269014
 main_window.xaml;user_controls\collection_listbox.xaml;user_controls\design_ideas_listbox.xaml;user_controls\image_view.xaml;user_controls\item_generic.xaml;user_controls\users_listbox.xaml;user_controls\window_content.xaml;user_controls\window_frame.xaml;
 
-False
+True
 

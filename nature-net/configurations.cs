@@ -40,6 +40,7 @@ namespace nature_net
         public static string drop_avatar_pic = "drop_avatar.png";
         public static string loading_image_pic = "loading_image.png";
         public static string empty_image_pic = "empty_image.png";
+        public static string not_found_image_pic = "not_found_image.png";
         public static string close_icon = "close.png";
         public static string change_view_list_icon = "change_view_list.png";
         public static string change_view_stack_icon = "change_view_stack.png";
@@ -51,6 +52,7 @@ namespace nature_net
         public static ImageSource img_drop_avatar_pic;
         public static ImageSource img_loading_image_pic;
         public static ImageSource img_empty_image_pic;
+        public static ImageSource img_not_found_image_pic;
         public static ImageSource img_close_icon;
         public static ImageSource img_change_view_list_icon;
         public static ImageSource img_change_view_stack_icon;
@@ -117,6 +119,7 @@ namespace nature_net
             img_drop_avatar_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + drop_avatar_pic));
             img_loading_image_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + loading_image_pic));
             img_empty_image_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + empty_image_pic));
+            img_not_found_image_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + not_found_image_pic));
             img_close_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + close_icon));
             img_collection_window_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + collection_window_icon));
             img_signup_window_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + signup_window_icon));

@@ -25,7 +25,7 @@
         </Style>
     </Window.Resources>
     
-        <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True" Name="application_panel">
         <uc:users_listbox x:Name="users_listbox" DockPanel.Dock="Left" Width="220">
         </uc:users_listbox>
         <uc:design_ideas_listbox x:Name="design_ideas_listbox" DockPanel.Dock="Right" Width="220">
