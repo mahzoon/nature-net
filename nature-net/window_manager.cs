@@ -110,7 +110,7 @@ namespace nature_net
             window_content content = new window_content();
             collection_listbox c_listbox = new collection_listbox();
             c_listbox.list_all_images(username);
-            content.initialize_contents(c_listbox, Type.GetType("User"), userid);
+            content.initialize_contents(c_listbox, Type.GetType("nature_net.User"), userid, frame);
             frame.window_content.Content = content;
             content.list_all_comments();
 
@@ -128,7 +128,7 @@ namespace nature_net
             window_content content = new window_content();
             image_view img = new image_view();
             img.view_image(contribution_id);
-            content.initialize_contents(img, Type.GetType("Contribution"), contribution_id);
+            content.initialize_contents(img, Type.GetType("nature_net.Contribution"), contribution_id, frame);
             frame.window_content.Content = content;
             content.list_all_comments();
             window_manager.image_display_frames.Add(frame);
@@ -138,16 +138,24 @@ namespace nature_net
             frame.set_title("Image");
         }
 
-        public static void open_design_idea_window(int contribution_id, double pos_x, double pos_y)
+        public static void open_design_idea_window(string[] idea_item, double pos_x, double pos_y)
         {
             if (window_manager.design_ideas_frames.Count + 1 > configurations.max_design_ideas_frame)
                 return;
 
             window_frame frame = new window_frame();
             window_content content = new window_content();
-            //image_view img = new image_view();
-            //img.view_image(contribution_id);
-            //content.initialize_contents(img, Type.GetType("Contribution"), contribution_id);
+            item_generic i = new item_generic();
+            i.avatar.Source = new BitmapImage(new Uri(idea_item[2]));
+            i.avatar.Source.Freeze();
+            i.username.Content = idea_item[3]; i.user_desc.Content = idea_item[4];
+            i.desc.Content = idea_item[5];
+            AccessText at = new AccessText(); at.TextWrapping = TextWrapping.Wrap;
+            at.TextAlignment = TextAlignment.Justify; at.Margin = new Thickness(0);
+            at.Text = idea_item[6]; i.content.Content = at;
+            i.Background = new SolidColorBrush(Colors.White);
+            content.initialize_contents(i, Type.GetType("nature_net.Contribution"), Convert.ToInt32(idea_item[1]), frame);
+
             frame.window_content.Content = content;
             content.list_all_comments();
 
@@ -155,6 +163,26 @@ namespace nature_net
             open_window(frame, pos_x, pos_y);
             frame.hide_change_view();
             frame.set_title("Design Idea");
+        }
+
+        public static void open_design_idea_window_ext(design_ideas_listbox parent, double pos_x, double pos_y)
+        {
+            if (window_manager.design_ideas_frames.Count + 1 > configurations.max_design_ideas_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            window_content content = new window_content();
+            design_ideas_listbox list = new design_ideas_listbox();
+            list.parent = parent;
+            list.submit.Visibility = Visibility.Collapsed;
+            content.initialize_contents(list, true, frame);
+            frame.window_content.Content = content;
+            //content.list_all_comments();
+
+            window_manager.design_ideas_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            frame.hide_change_view();
+            frame.set_title("Design Ideas");
         }
 
         public static void open_signup_window(double pos_x, double pos_y)
@@ -166,7 +194,7 @@ namespace nature_net
             //window_content content = new window_content();
             //image_view img = new image_view();
             //img.view_image(contribution_id);
-            //content.initialize_contents(img, Type.GetType("Contribution"), contribution_id);
+            //content.initialize_contents(img, Type.GetType("nature_net.Contribution"), contribution_id);
             //frame.window_content.Content = content;
             //content.list_all_comments();
 

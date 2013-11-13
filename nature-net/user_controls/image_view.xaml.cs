@@ -114,9 +114,10 @@ namespace nature_net.user_controls
             center = matrix.Transform(center);
             //double scale_x_old = matrix.M11;
             //double scale_y_old = matrix.M22;
-            if (deltaManipulation.Scale.X >= 0.5 && deltaManipulation.Scale.X <= 2.5
-                && deltaManipulation.Scale.Y >= 0.5 && deltaManipulation.Scale.Y <= 2.5)
-                matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
+            if (the_image.ActualHeight < 300 && the_image.ActualHeight > 100 && the_image.ActualWidth < 300 && the_image.ActualWidth > 100)
+                if (deltaManipulation.Scale.X >= 0.5 && deltaManipulation.Scale.X <= 2.5
+                    && deltaManipulation.Scale.Y >= 0.5 && deltaManipulation.Scale.Y <= 2.5)
+                    matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y);
             //if (matrix.M11 < 0.5) matrix.M11 = 0.5; if (matrix.M11 > 2.0) matrix.M11 = 2.0;
             //if (matrix.M22 < 0.5) matrix.M22 = 0.5; if (matrix.M22 > 2.0) matrix.M22 = 2.0;
             

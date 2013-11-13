@@ -7,9 +7,21 @@
              d:DesignWidth="300">
     <DockPanel LastChildFill="False">
         <ContentControl Name="the_item" DockPanel.Dock="Top"></ContentControl>
+        <Button Name="expander" DockPanel.Dock="Top" HorizontalAlignment="Center" Width="22" Background="#FF3E9D3E" Foreground="White">v</Button>
         <ListBox Name="comments_listbox" DockPanel.Dock="Top" Height="150"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.PanningMode="VerticalOnly"></ListBox>
-        <Image Name="add_comment_img" Height="75" Stretch="Fill" ></Image>
+                 ScrollViewer.PanningMode="VerticalOnly" ScrollViewer.CanContentScroll="False"></ListBox>
+        <StackPanel DockPanel.Dock="Top" Orientation="Vertical" AllowDrop="True" Name="leave_comment_area">
+            <DockPanel Name="leave_comment_panel" LastChildFill="True">
+                <Image DockPanel.Dock="Left" Name="avatar" Height="75"></Image>
+                <Button DockPanel.Dock="Right" Name="submit_comment" Width="65">
+                    Submit
+                </Button>
+                <TextBox DockPanel.Dock="Left" Name="comment_textbox" TextWrapping="Wrap" AcceptsReturn="True"
+                         FontSize="15"></TextBox>
+            </DockPanel>
+            <Image Name="add_comment_img" Height="75" Stretch="Fill" ></Image>
+        </StackPanel>
+        
     </DockPanel>
 </UserControl>

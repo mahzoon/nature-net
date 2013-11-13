@@ -42,6 +42,13 @@ namespace nature_net.user_controls
             this.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(start_handler);
             this.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(delta_handler);
         }
+
+        public string ToString()
+        {
+            string result = ((int)this.Tag).ToString() + ";" + this.avatar.Source.ToString() + ";" + this.username.Content +
+                ";" + this.user_desc.Content + ";" + this.desc.Content + ";" + ((AccessText)this.content.Content).Text;
+            return result;
+        }
     }
 
     public delegate void manipulation_starting_handler(object sender, ManipulationStartingEventArgs e);

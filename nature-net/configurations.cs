@@ -23,6 +23,7 @@ namespace nature_net
         public static bool use_existing_thumbnails = true;
         public static double drag_dy_dx_factor = 2.1;
         public static double drag_dx_dy_factor = 1.0;
+        public static int design_idea_ext_window_width = 250;
 
         public static string current_directory = System.IO.Directory.GetCurrentDirectory() + "\\";
         public static string image_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\";
@@ -122,6 +123,52 @@ namespace nature_net
             img_change_view_list_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + change_view_list_icon));
             img_change_view_stack_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + change_view_stack_icon));
             img_signup_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + signup_icon));
+        }
+
+        public static string GetDate_Formatted(DateTime dt)
+        {
+            string r = dt.Day.ToString() + " " + GetMonthName(dt.Month) + " " + dt.Year.ToString();
+            return r;
+        }
+
+        public static string GetCurrentDate_Formatted()
+        {
+            DateTime dt = DateTime.Now;
+            string r = dt.Day.ToString() + " " + GetMonthName(dt.Month) + " " + dt.Year.ToString();
+            return r;
+        }
+
+        public static String GetMonthName(int month)
+        {
+            switch (month)
+            {
+                case 1:
+                    return "Jan";
+                case 2:
+                    return "Feb";
+                case 3:
+                    return "Mar";
+                case 4:
+                    return "Apr";
+                case 5:
+                    return "May";
+                case 6:
+                    return "Jun";
+                case 7:
+                    return "Jul";
+                case 8:
+                    return "Aug";
+                case 9:
+                    return "Sep";
+                case 10:
+                    return "Oct";
+                case 11:
+                    return "Nov";
+                case 12:
+                    return "Dec";
+                default:
+                    return "Unknown";
+            }
         }
 
         public static void SetSettingsFromConfig(iniparser parser)

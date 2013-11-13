@@ -24,6 +24,7 @@ namespace nature_net.user_controls
     public partial class design_ideas_listbox : UserControl
     {
         private readonly BackgroundWorker worker = new BackgroundWorker();
+        public design_ideas_listbox parent;
 
         public design_ideas_listbox()
         {
@@ -42,6 +43,16 @@ namespace nature_net.user_controls
             //SurfaceDragDrop.AddPreviewDragLeaveHandler(this.design_ideas, new EventHandler<SurfaceDragDropEventArgs>(design_ideas_DragLeave));
             //SurfaceDragDrop.AddDragLeaveHandler(this.design_ideas, new EventHandler<SurfaceDragDropEventArgs>(design_ideas_DragLeave));
             this.design_ideas.TouchDown += new EventHandler<TouchEventArgs>(design_ideas_PreviewTouchDown);
+
+            this.submit.TouchDown += new EventHandler<TouchEventArgs>(submit_TouchDown);
+        }
+
+        void submit_TouchDown(object sender, TouchEventArgs e)
+        {
+            window_manager.open_design_idea_window_ext(this,
+                configurations.RANDOM((int)(window_manager.main_canvas.ActualWidth - this.ActualWidth) - 20,
+                (int)(window_manager.main_canvas.ActualWidth - this.ActualWidth)),
+                configurations.RANDOM(0, (int)window_manager.main_canvas.ActualHeight));
         }
 
         void design_ideas_PreviewTouchMove(object sender, TouchEventArgs e)
@@ -65,7 +76,7 @@ namespace nature_net.user_controls
 
                     item_generic i = (item_generic)element.DataContext;
 
-                    string contribution = "design idea;" + ((int)i.Tag).ToString() + ";nothing";
+                    string contribution = "design idea;" + i.ToString();
                     start_drag(element, contribution, e.TouchDevice, i.avatar.Source.Clone());
                     e.Handled = true;
                 }
@@ -88,7 +99,8 @@ namespace nature_net.user_controls
         {
             if (e.AddedItems.Count == 0) return;
             item_generic item = (item_generic)e.AddedItems[0];
-            window_manager.open_design_idea_window((int)item.Tag,
+            string[] idea_item = ("design idea;" + item.ToString()).Split(new Char[] { ';' });
+            window_manager.open_design_idea_window(idea_item,
                 configurations.RANDOM((int)(window_manager.main_canvas.ActualWidth - item.ActualWidth) - 20,
                 (int)(window_manager.main_canvas.ActualWidth - item.ActualWidth)),
                 item.PointToScreen(new Point(0, 0)).Y);
@@ -140,6 +152,7 @@ namespace nature_net.user_controls
         {
             naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
             var r = from d in db.Design_Ideas
+                    orderby d.date descending
                     select d;
             if (r == null)
             {

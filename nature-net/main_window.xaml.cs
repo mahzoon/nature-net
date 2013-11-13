@@ -56,18 +56,21 @@ namespace nature_net
                 int user_id = Convert.ToInt32(data[1]);
                 window_manager.open_collection_window(username, user_id,
                     e.Cursor.GetPosition(sender as IInputElement).X, e.Cursor.GetPosition(sender as IInputElement).Y);
+                e.Handled = true;
             }
             if (context == "design idea")
             {
-                int contribution_id = Convert.ToInt32(data[1]);
-                window_manager.open_design_idea_window(contribution_id, e.Cursor.GetPosition(sender as IInputElement).X,
+                if (data.Count() < 7) return;
+                window_manager.open_design_idea_window(data, e.Cursor.GetPosition(sender as IInputElement).X,
                     e.Cursor.GetPosition(sender as IInputElement).Y);
+                e.Handled = true;
             }
             if (context == "image")
             {
                 int contribution_id = Convert.ToInt32(data[1]);
                 window_manager.open_image_window(contribution_id, e.Cursor.GetPosition(sender as IInputElement).X,
                     e.Cursor.GetPosition(sender as IInputElement).Y);
+                e.Handled = true;
             }
         }
 

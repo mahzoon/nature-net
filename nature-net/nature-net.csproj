@@ -54,6 +54,14 @@
     <StartupObject>nature_net.program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JHLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\JHLib.dll</HintPath>
+    </Reference>
+    <Reference Include="JHVirtualKeyboard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\JHVirtualKeyboard.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Surface, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Surface.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Surface.Presentation, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -76,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="configurations.cs" />
+    <Compile Include="file_manager.cs" />
     <Compile Include="iniparser.cs" />
     <Compile Include="naturenet_dataclass.designer.cs">
       <AutoGen>True</AutoGen>
@@ -106,7 +115,6 @@
       <DependentUpon>window_frame.xaml</DependentUpon>
     </Compile>
     <Compile Include="window_manager.cs" />
-    <Compile Include="worker_thread.cs" />
     <Page Include="main_window.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

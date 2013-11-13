@@ -69,7 +69,7 @@ namespace nature_net.user_controls
 
                     item_generic i = (item_generic)element.DataContext;
 
-                    string username_id = "user;" + ((int)i.Tag).ToString() + ";" + (string)i.username.Content;
+                    string username_id = "user;" + ((int)i.Tag).ToString() + ";" + (string)i.username.Content + ";" + i.avatar.Source.ToString();
                     start_drag(element, username_id, e.TouchDevice, i.avatar.Source.Clone());
                     e.Handled = true;
                 }
@@ -133,6 +133,7 @@ namespace nature_net.user_controls
         {
             naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
             var r = from u in db.Users
+                    where u.id != 0
                     orderby u.name
                     select u;
             if (r == null)
