@@ -12,13 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Surface.Presentation;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace nature_net
 {
     /// <summary>
     /// Interaction logic for main_window.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : SurfaceWindow
     {
         public MainWindow()
         {
@@ -27,12 +28,10 @@ namespace nature_net
             configurations.SetSettingsFromConfig(parser);
             configurations.LoadIconImages();
 
-            //Static Configuration Values:
-            this.users_listbox.signup.avatar.Source = configurations.img_signup_icon;
-            
             var b = new ImageBrush();
             b.ImageSource = configurations.img_background_pic;
             this.workspace.Background = b;
+            //this.application_panel.Background = b;
 
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
 
@@ -54,8 +53,8 @@ namespace nature_net
             //bool blob = Microsoft.Surface.Presentation.Input.TouchExtensions.(e.TouchDevice);
             bool tag = Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsTagRecognized(e.TouchDevice);
 
-            //if (!finger && finger_supported)
-            //    e.Handled = true;
+            if (!finger && finger_supported)
+                e.Handled = true;
         }
 
         void item_droped_on_workspace(object sender, SurfaceDragDropEventArgs e)
@@ -86,12 +85,22 @@ namespace nature_net
                     e.Cursor.GetPosition(sender as IInputElement).Y);
                 e.Handled = true;
             }
+            if (context == "comment")
+            {
+                if (data.Count() < 7) return;
+                window_manager.open_design_idea_window(data, e.Cursor.GetPosition(sender as IInputElement).X,
+                    e.Cursor.GetPosition(sender as IInputElement).Y);
+                e.Handled = true;
+            }
         }
 
         void workspace_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
         {
             e.ManipulationContainer = this.workspace;
             e.Mode = ManipulationModes.All;
+            FrameworkElement element = (FrameworkElement)e.Source;
+            if (element == null) return;
+            this.UpdateZOrder(element, true);
         }
 
         void workspace_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
@@ -118,9 +127,52 @@ namespace nature_net
             window_manager.refresh_downloaded_contributions();
             if (configurations.use_existing_thumbnails)
                 window_manager.refresh_thumbnails();
-            this.users_listbox.list_all_users();
-            this.design_ideas_listbox.list_all_design_ideas();
+            this.left_tab.load_control(true);
+            this.right_tab.load_control(false);
             window_manager.main_canvas = this.workspace;
+        }
+
+        private void UpdateZOrder(UIElement element, bool bringToFront)
+        {
+            if (element == null)return;
+            if (!this.workspace.Children.Contains(element))return;
+
+            // Determine the Z-Index for the target UIElement.
+            int elementNewZIndex = -1;
+            if (bringToFront)
+            {
+                foreach (UIElement elem in this.workspace.Children)
+                    if (elem.Visibility != Visibility.Collapsed)
+                        ++elementNewZIndex;
+            }
+            else
+            {
+                elementNewZIndex = 0;
+            }
+
+            // Determine if the other UIElements' Z-Index 
+            // should be raised or lowered by one. 
+            int offset = (elementNewZIndex == 0) ? +1 : -1;
+            int elementCurrentZIndex = Canvas.GetZIndex(element);
+
+            // Update the Z-Index of every UIElement in the Canvas.
+            foreach (UIElement childElement in this.workspace.Children)
+            {
+                if (childElement == element)
+                    Canvas.SetZIndex(element, elementNewZIndex);
+                else
+                {
+                    int zIndex = Canvas.GetZIndex(childElement);
+
+                    // Only modify the z-index of an element if it is  
+                    // in between the target element's old and new z-index.
+                    if (bringToFront && elementCurrentZIndex < zIndex ||
+                        !bringToFront && zIndex < elementCurrentZIndex)
+                    {
+                        Canvas.SetZIndex(childElement, zIndex + offset);
+                    }
+                }
+            }
         }
     }
 }

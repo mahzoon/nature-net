@@ -39,5 +39,9 @@ C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.cspr
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\image_view.baml
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\image_view.g.cs
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.csprojResolveAssemblyReference.cache
-C:\Users\MJ\Documents\GitHub\nature-net\nature-net\bin\Debug\JHLib.pdb
-C:\Users\MJ\Documents\GitHub\nature-net\nature-net\bin\Debug\JHVirtualKeyboard.pdb
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\custom_listbox.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\custom_listbox.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\tab_control.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\tab_control.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\v_keyboard\virtual_keyboard.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\v_keyboard\virtual_keyboard.g.cs

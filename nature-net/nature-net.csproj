@@ -54,14 +54,6 @@
     <StartupObject>nature_net.program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JHLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\JHLib.dll</HintPath>
-    </Reference>
-    <Reference Include="JHVirtualKeyboard, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\JHVirtualKeyboard.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Surface, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Surface.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Surface.Presentation, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -96,6 +88,9 @@
     <Compile Include="user_controls\collection_listbox.xaml.cs">
       <DependentUpon>collection_listbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="user_controls\custom_listbox.xaml.cs">
+      <DependentUpon>custom_listbox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="user_controls\design_ideas_listbox.xaml.cs">
       <DependentUpon>design_ideas_listbox.xaml</DependentUpon>
     </Compile>
@@ -105,9 +100,19 @@
     <Compile Include="user_controls\item_generic.xaml.cs">
       <DependentUpon>item_generic.xaml</DependentUpon>
     </Compile>
+    <Compile Include="user_controls\v_keyboard\IVirtualKeyboardInjectable.cs" />
+    <Compile Include="user_controls\v_keyboard\KeyAssignment.cs" />
+    <Compile Include="user_controls\v_keyboard\KeyAssignments.cs" />
+    <Compile Include="user_controls\tab_control.xaml.cs">
+      <DependentUpon>tab_control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="user_controls\users_listbox.xaml.cs">
       <DependentUpon>users_listbox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="user_controls\v_keyboard\virtual_keyboard.xaml.cs">
+      <DependentUpon>virtual_keyboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="user_controls\v_keyboard\WPFExtensions.cs" />
     <Compile Include="user_controls\window_content.xaml.cs">
       <DependentUpon>window_content.xaml</DependentUpon>
     </Compile>
@@ -127,6 +132,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="user_controls\custom_listbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="user_controls\design_ideas_listbox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -139,7 +148,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="user_controls\tab_control.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="user_controls\users_listbox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="user_controls\v_keyboard\virtual_keyboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

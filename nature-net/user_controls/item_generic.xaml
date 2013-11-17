@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignWidth="400">
+             d:DesignWidth="200">
     
     <Border BorderBrush="Gray">
     <DockPanel LastChildFill="True">
@@ -14,7 +14,7 @@
             <StackPanel Name="topright_panel" Margin="10,0,10,0"
                         Orientation="Vertical" VerticalAlignment="Center">
                 <Label Name="username" FontWeight="Bold">Name</Label>
-                <Label Name="user_desc">Description</Label>
+                <Label Name="user_desc" FontStyle="Italic" FontSize="10" >Description</Label>
             </StackPanel>
         </StackPanel>
         <Label Name="desc" Margin="10,0,10,0" DockPanel.Dock="Top">Contributes/Suggests:</Label>

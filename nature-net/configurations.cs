@@ -24,6 +24,7 @@ namespace nature_net
         public static double drag_dy_dx_factor = 2.1;
         public static double drag_dx_dy_factor = 1.0;
         public static int design_idea_ext_window_width = 250;
+        public static bool use_avatar_drag = true;
 
         public static string current_directory = System.IO.Directory.GetCurrentDirectory() + "\\";
         public static string image_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\";
@@ -41,6 +42,7 @@ namespace nature_net
         public static string loading_image_pic = "loading_image.png";
         public static string empty_image_pic = "empty_image.png";
         public static string not_found_image_pic = "not_found_image.png";
+        public static string keyboard_pic = "keyboard.png";
         public static string close_icon = "close.png";
         public static string change_view_list_icon = "change_view_list.png";
         public static string change_view_stack_icon = "change_view_stack.png";
@@ -48,11 +50,14 @@ namespace nature_net
         public static string signup_icon = "signup.png";
         public static string signup_window_icon = "signup_window_icon.png";
 
+        public static string keyboard_click_wav = "click.wav";
+
         public static ImageSource img_background_pic;
         public static ImageSource img_drop_avatar_pic;
         public static ImageSource img_loading_image_pic;
         public static ImageSource img_empty_image_pic;
         public static ImageSource img_not_found_image_pic;
+        public static ImageSource img_keyboard_pic;
         public static ImageSource img_close_icon;
         public static ImageSource img_change_view_list_icon;
         public static ImageSource img_change_view_stack_icon;
@@ -120,6 +125,7 @@ namespace nature_net
             img_loading_image_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + loading_image_pic));
             img_empty_image_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + empty_image_pic));
             img_not_found_image_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + not_found_image_pic));
+            img_keyboard_pic = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + keyboard_pic));
             img_close_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + close_icon));
             img_collection_window_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + collection_window_icon));
             img_signup_window_icon = new BitmapImage(new Uri(configurations.GetAbsoluteImagePath() + signup_window_icon));

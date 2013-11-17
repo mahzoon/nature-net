@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Surface.Presentation;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace nature_net.user_controls
 {
@@ -28,9 +30,6 @@ namespace nature_net.user_controls
             //this.title_bar.Background = new SolidColorBrush(Color.;
             //this.frame.BorderBrush = new SolidColorBrush(Color.;
             this.title_bar.Height = 40;
-            this.change_view.Margin = new Thickness(2, 5, 5, 2);
-            this.close.Margin = new Thickness(5, 5, 5, 2);
-            this.window_icon.Margin = new Thickness(5, 5, 5, 5);
             this.window_icon.Width = 40;
             var b1 = new ImageBrush();
             b1.ImageSource = configurations.img_close_icon;
@@ -41,9 +40,7 @@ namespace nature_net.user_controls
             this.window_icon.Source = configurations.img_collection_window_icon;
 
             this.close.Click += new RoutedEventHandler(close_Click);
-            this.close.TouchDown += new EventHandler<TouchEventArgs>(close_TouchUp);
             this.change_view.Click += new RoutedEventHandler(change_view_Click);
-            this.change_view.TouchUp += new EventHandler<TouchEventArgs>(change_view_TouchUp);
         }
 
         public void set_title(string t)
@@ -61,16 +58,6 @@ namespace nature_net.user_controls
             
         }
         
-        void change_view_TouchUp(object sender, TouchEventArgs e)
-        {
-
-        }
-
-        void close_TouchUp(object sender, TouchEventArgs e)
-        {
-            window_manager.close_window(this);
-        }
-
         void close_Click(object sender, RoutedEventArgs e)
         {
             window_manager.close_window(this);

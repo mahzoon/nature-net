@@ -130,7 +130,6 @@ namespace nature_net
             img.view_image(contribution_id);
             content.initialize_contents(img, Type.GetType("nature_net.Contribution"), contribution_id, frame);
             frame.window_content.Content = content;
-            content.list_all_comments();
             window_manager.image_display_frames.Add(frame);
             open_window(frame, pos_x, pos_y);
             img.center_image();
@@ -150,14 +149,11 @@ namespace nature_net
             i.avatar.Source.Freeze();
             i.username.Content = idea_item[3]; i.user_desc.Content = idea_item[4];
             i.desc.Content = idea_item[5];
-            AccessText at = new AccessText(); at.TextWrapping = TextWrapping.Wrap;
-            at.TextAlignment = TextAlignment.Justify; at.Margin = new Thickness(0);
-            at.Text = idea_item[6]; i.content.Content = at;
+            ((AccessText)i.content.Content).Text = idea_item[6];
             i.Background = new SolidColorBrush(Colors.White);
             content.initialize_contents(i, Type.GetType("nature_net.Contribution"), Convert.ToInt32(idea_item[1]), frame);
 
             frame.window_content.Content = content;
-            content.list_all_comments();
 
             window_manager.design_ideas_frames.Add(frame);
             open_window(frame, pos_x, pos_y);
@@ -174,15 +170,13 @@ namespace nature_net
             window_content content = new window_content();
             design_ideas_listbox list = new design_ideas_listbox();
             list.parent = parent;
-            list.submit.Visibility = Visibility.Collapsed;
             content.initialize_contents(list, true, frame);
             frame.window_content.Content = content;
-            //content.list_all_comments();
 
             window_manager.design_ideas_frames.Add(frame);
             open_window(frame, pos_x, pos_y);
             frame.hide_change_view();
-            frame.set_title("Design Ideas");
+            frame.set_title("Submit Design Idea");
         }
 
         public static void open_signup_window(double pos_x, double pos_y)

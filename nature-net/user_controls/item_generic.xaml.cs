@@ -36,21 +36,29 @@ namespace nature_net.user_controls
             this.content.FontFamily = new FontFamily("Segoe UI"); this.content.FontSize = 12;
         }
 
-        public void set_touchevent(manipulation_starting_handler start_handler, manipulation_delta_handler delta_handler)
+        public void set_touchevent(avatar_touch_down_handler touch_handler)
         {
-            this.IsManipulationEnabled = true;
-            this.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(start_handler);
-            this.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(delta_handler);
+            this.avatar.PreviewTouchDown += new EventHandler<TouchEventArgs>(touch_handler);
         }
 
-        public string ToString()
+        public override string ToString()
         {
-            string result = ((int)this.Tag).ToString() + ";" + this.avatar.Source.ToString() + ";" + this.username.Content +
-                ";" + this.user_desc.Content + ";" + this.desc.Content + ";" + ((AccessText)this.content.Content).Text;
+            string id = "-1";
+            if (this.Tag != null)
+                id = ((int)this.Tag).ToString();
+            string c = "";
+            if (((AccessText)this.content.Content).Text != null)
+                c = ((AccessText)this.content.Content).Text;
+            string source = "";
+            if (this.avatar.Source != null)
+                source = this.avatar.Source.ToString();
+            string result = id + ";" + source + ";" + this.username.Content +
+                ";" + this.user_desc.Content + ";" + this.desc.Content + ";" + c;
             return result;
         }
     }
 
     public delegate void manipulation_starting_handler(object sender, ManipulationStartingEventArgs e);
     public delegate void manipulation_delta_handler(object sender, ManipulationDeltaEventArgs e);
+    public delegate void avatar_touch_down_handler(object sender, TouchEventArgs e);
 }

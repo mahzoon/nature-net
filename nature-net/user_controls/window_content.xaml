@@ -3,20 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:uc="clr-namespace:nature_net.user_controls"
+             xmlns:s="http://schemas.microsoft.com/surface/2008"
              mc:Ignorable="d" 
              d:DesignWidth="300">
     <DockPanel LastChildFill="False">
         <ContentControl Name="the_item" DockPanel.Dock="Top"></ContentControl>
-        <Button Name="expander" DockPanel.Dock="Top" HorizontalAlignment="Center" Width="22" Background="#FF3E9D3E" Foreground="White">v</Button>
-        <ListBox Name="comments_listbox" DockPanel.Dock="Top" Height="150"
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.PanningMode="VerticalOnly" ScrollViewer.CanContentScroll="False"></ListBox>
+        <s:SurfaceButton Name="expander" DockPanel.Dock="Top" HorizontalAlignment="Center" Width="38" Height="38"
+                         VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                         Background="#FF3E9D3E" Foreground="White">v</s:SurfaceButton>
+        <uc:custom_listbox x:Name="comments_listbox" Height="150" DockPanel.Dock="Top" />
         <StackPanel DockPanel.Dock="Top" Orientation="Vertical" AllowDrop="True" Name="leave_comment_area">
             <DockPanel Name="leave_comment_panel" LastChildFill="True">
                 <Image DockPanel.Dock="Left" Name="avatar" Height="75"></Image>
-                <Button DockPanel.Dock="Right" Name="submit_comment" Width="65">
+                <s:SurfaceButton DockPanel.Dock="Right" Name="submit_comment" Width="65" HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center" FontFamily="Segoe UI" FontSize="14">
                     Submit
-                </Button>
+                </s:SurfaceButton>
                 <TextBox DockPanel.Dock="Left" Name="comment_textbox" TextWrapping="Wrap" AcceptsReturn="True"
                          FontSize="15"></TextBox>
             </DockPanel>

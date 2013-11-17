@@ -12,10 +12,7 @@
         <Border DockPanel.Dock="Top" BorderThickness="1" BorderBrush="Gray">
             <uc:item_generic x:Name="signup"></uc:item_generic>
         </Border>
-        <s:SurfaceListBox Name="users_list" DockPanel.Dock="Top"
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="VerticalOnly">
-        </s:SurfaceListBox>
+        <uc:custom_listbox x:Name="users_list" />
     </DockPanel>
     
 </UserControl>

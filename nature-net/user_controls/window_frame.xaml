@@ -3,13 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="http://schemas.microsoft.com/surface/2008"
              mc:Ignorable="d" 
              d:DesignWidth="300">
     
     <DockPanel LastChildFill="True">
         <DockPanel Name="title_bar" DockPanel.Dock="Top" Background="#FF00AB00" Height="40">
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                <Button Name="change_view" Margin="2,5,5,2" Width="33">
+                <s:SurfaceButton Name="change_view" Margin="2,2,2,2" Width="33" Height="33">
                     <Button.Style><Style><Setter Property="Button.Template"><Setter.Value>
                         <ControlTemplate>
                             <Border Name="border" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="5" Background="{TemplateBinding Background}">
@@ -17,8 +18,8 @@
                             </Border>
                         </ControlTemplate>
                     </Setter.Value></Setter></Style></Button.Style>
-                </Button>
-                <Button Name="close" Margin="5,5,5,2" Width="33">
+                </s:SurfaceButton>
+                <s:SurfaceButton Name="close" Margin="2,2,2,2" Width="33" Height="33">
                     <Button.Style>
                         <Style>
                             <Setter Property="Button.Template">
@@ -32,7 +33,7 @@
                             </Setter>
                         </Style>
                     </Button.Style>
-                </Button>
+                </s:SurfaceButton>
             </StackPanel>
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <Image Name="window_icon" Margin="5,5,5,5" Width="40"></Image>

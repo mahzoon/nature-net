@@ -3,19 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:uc="clr-namespace:nature_net.user_controls"
              xmlns:s="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation"
              mc:Ignorable="d" 
              d:DesignWidth="300">
     
-    <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True" Background="White">
         <Label Name="desc" Height="50" DockPanel.Dock="Top" Background="Green" Foreground="White"
-               HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+               HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+               FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold">
             Design Ideas
         </Label>
-        <Button Name="submit" Height="50" DockPanel.Dock="Bottom">Submit Design Idea</Button>
-        <s:SurfaceListBox Name="design_ideas" DockPanel.Dock="Top"
-                 ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                 ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="VerticalOnly">
-        </s:SurfaceListBox>
+        <s:SurfaceButton Name="submit_button" Height="80" DockPanel.Dock="Bottom" Background="Green" Foreground="White"
+                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,0,0"
+                         FontFamily="Segoe UI" FontSize="14" FontWeight="SemiBold"  Padding="0,0,0,25">
+            Submit Design Idea</s:SurfaceButton>
+        <uc:custom_listbox x:Name="design_ideas_list" />
     </DockPanel>
 </UserControl>

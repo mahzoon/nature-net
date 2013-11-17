@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Windows.Threading;
 using Microsoft.Surface.Presentation;
-using JHVirtualKeyboard;
 
 namespace nature_net.user_controls
 {
@@ -31,7 +30,7 @@ namespace nature_net.user_controls
         private int comment_user_id;
         bool expand_state = false;
 
-        VirtualKeyboard keyboard;
+        virtual_keyboard keyboard;
         ContentControl keyboard_frame;
         UserControl parent;
 
@@ -45,14 +44,37 @@ namespace nature_net.user_controls
 
             this.leave_comment_area.AllowDrop = true;
             SurfaceDragDrop.AddPreviewDropHandler(this.leave_comment_area, new EventHandler<SurfaceDragDropEventArgs>(item_droped_on_leave_comment_area));
-            this.expander.TouchDown += new EventHandler<TouchEventArgs>(expander_TouchDown);
-            this.comments_listbox.Visibility = System.Windows.Visibility.Collapsed;
-            this.leave_comment_area.Visibility = System.Windows.Visibility.Collapsed;
-
-            this.comment_textbox.GotKeyboardFocus += new KeyboardFocusChangedEventHandler(comment_textbox_GotKeyboardFocus);
-            this.comment_textbox.LostKeyboardFocus += new KeyboardFocusChangedEventHandler(comment_textbox_LostKeyboardFocus);
+            this.expander.Click += new RoutedEventHandler(expander_Click);
+            
+            this.comment_textbox.GotFocus += new RoutedEventHandler(comment_textbox_GotKeyboardFocus);
+            this.comment_textbox.LostFocus += new RoutedEventHandler(comment_textbox_LostKeyboardFocus);
             this.LayoutUpdated += new EventHandler(window_content_LayoutUpdated);
             this.Unloaded += new RoutedEventHandler(window_content_Unloaded);
+            this.Loaded += new RoutedEventHandler(window_content_Loaded);
+        }
+
+        void window_content_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (is_design_idea)
+                this.expander.Visibility = System.Windows.Visibility.Collapsed;
+
+            if (expand_state)
+            {
+                if (!is_design_idea)
+                    this.comments_listbox.Visibility = System.Windows.Visibility.Visible;
+                else
+                    this.comments_listbox.Visibility = System.Windows.Visibility.Collapsed;
+                this.leave_comment_area.Visibility = System.Windows.Visibility.Visible;
+                this.comments_listbox.UpdateLayout();
+                this.expander.Content = "^";
+            }
+            else
+            {
+                this.comments_listbox.Visibility = System.Windows.Visibility.Collapsed;
+                this.leave_comment_area.Visibility = System.Windows.Visibility.Collapsed;
+                this.comments_listbox.UpdateLayout();
+                this.expander.Content = "v";
+            }
         }
 
         void window_content_Unloaded(object sender, RoutedEventArgs e)
@@ -75,16 +97,16 @@ namespace nature_net.user_controls
             }
         }
 
-        void comment_textbox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        void comment_textbox_LostKeyboardFocus(object sender, RoutedEventArgs e)
         {
             keyboard_frame.Visibility = System.Windows.Visibility.Collapsed;
         }
 
-        void comment_textbox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        void comment_textbox_GotKeyboardFocus(object sender, RoutedEventArgs e)
         {
             if (keyboard_frame == null)
                 keyboard_frame = new ContentControl();
-            VirtualKeyboard.ShowOrAttachTo(this, ref keyboard);
+            virtual_keyboard.ShowKeyboard(this, ref keyboard);
             keyboard_frame.Visibility = System.Windows.Visibility.Visible;
             if (keyboard != null)
             {
@@ -99,19 +121,21 @@ namespace nature_net.user_controls
             }
         }
 
-        void expander_TouchDown(object sender, TouchEventArgs e)
+        void expander_Click(object sender, RoutedEventArgs e)
         {
             expand_state = !expand_state;
             if (expand_state)
             {
                 this.comments_listbox.Visibility = System.Windows.Visibility.Visible;
                 this.leave_comment_area.Visibility = System.Windows.Visibility.Visible;
+                this.comments_listbox.UpdateLayout();
                 this.expander.Content = "^";
             }
             else
             {
                 this.comments_listbox.Visibility = System.Windows.Visibility.Collapsed;
                 this.leave_comment_area.Visibility = System.Windows.Visibility.Collapsed;
+                this.comments_listbox.UpdateLayout();
                 this.expander.Content = "v";
             }
         }
@@ -172,6 +196,7 @@ namespace nature_net.user_controls
                 this.leave_comment_panel.Visibility = System.Windows.Visibility.Visible;
                 this.comment_user_id = user_id;
                 this.avatar.Source = new BitmapImage(new Uri(data[3]));
+                this.comment_textbox.Focus();
             }
             e.Handled = true;
         }
@@ -188,77 +213,23 @@ namespace nature_net.user_controls
 
         public void initialize_contents(UserControl uc, bool is_design, UserControl parent_frame)
         {
-            this.the_item.Content = uc;
+            //this.the_item.Content = uc;
             this.is_design_idea = is_design;
-            this.comments_listbox.Visibility = System.Windows.Visibility.Collapsed;
-            this.expander.Visibility = System.Windows.Visibility.Collapsed;
-            this.leave_comment_area.Visibility = System.Windows.Visibility.Visible;
             this.add_comment_img.Source = configurations.img_drop_avatar_pic;
-            ((design_ideas_listbox)the_item.Content).list_all_design_ideas();
-            ((design_ideas_listbox)the_item.Content).desc.Visibility = System.Windows.Visibility.Collapsed;
-            ((design_ideas_listbox)the_item.Content).Height = configurations.design_idea_ext_window_width;
-            ((design_ideas_listbox)the_item.Content).Background = new SolidColorBrush(Colors.White);
+            //((design_ideas_listbox)the_item.Content).list_all_design_ideas();
+            //((design_ideas_listbox)the_item.Content).desc.Visibility = System.Windows.Visibility.Collapsed;
+            //((design_ideas_listbox)the_item.Content).submit_button.Visibility = System.Windows.Visibility.Collapsed;
+            //((design_ideas_listbox)the_item.Content).Height = configurations.design_idea_ext_window_width;
+            //((design_ideas_listbox)the_item.Content).Background = new SolidColorBrush(Colors.White);
+            this.expand_state = true;
             this.parent = parent_frame;
         }
 
         public void list_all_comments()
         {
-            worker.DoWork += new DoWorkEventHandler(get_all_comments);
-            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(display_all_comments);
-            if (!worker.IsBusy)
-                worker.RunWorkerAsync(null);
-        }
-
-        public void get_all_comments(object arg, DoWorkEventArgs e)
-        {
-            naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
-            var r = from c in db.Feedbacks
-                    where (c.Feedback_Type.name == "Comment") && (c.object_type == this._object_type.ToString())
-                    && (c.object_id == this._object_id)
-                    orderby c.date descending
-                    select c;
-            if (r != null)
-            {
-                List<Feedback> comments = r.ToList<Feedback>();
-                e.Result = (object)comments;
-            }
-            else
-            {
-                e.Result = (object)(new List<Feedback>());
-            }
-        }
-
-        public void display_all_comments(object c_obj, RunWorkerCompletedEventArgs e)
-        {
-            this.comments_listbox.Items.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-               new System.Action(() =>
-               {
-                   this.comments_listbox.Items.Clear();
-                   List<Feedback> comments = (List<Feedback>)e.Result;
-                   //manipulation_starting_handler start_handler = new manipulation_starting_handler(users_list_ManipulationStarting);
-                   //manipulation_delta_handler delta_handler = new manipulation_delta_handler(users_list_ManipulationDelta);
-                   foreach (Feedback c in comments)
-                   {
-                       item_generic i = new item_generic();
-                       i.username.Content = c.User.name;
-                       //i.user_desc.Content = idea.design_idea.date;
-                       i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
-                       //i.desc.Visibility = System.Windows.Visibility.Collapsed;
-                       i.desc.Content = "Commented on " + c.date.ToString();
-                       //i.content.Visibility = System.Windows.Visibility.Collapsed;
-                       AccessText at = new AccessText();
-                       at.TextWrapping = TextWrapping.Wrap;
-                       at.TextAlignment = TextAlignment.Justify;
-                       at.Margin = new Thickness(0);
-                       at.Text = c.note;
-                       i.content.Content = at;
-                       //i.set_touchevent(start_handler, delta_handler);
-                       i.Width = this.Width - 5;
-                       i.avatar.Source = new BitmapImage(new Uri(configurations.GetAbsoluteAvatarPath() + c.User.avatar));
-                       this.comments_listbox.Items.Add(i);
-                   }
-                   this.comments_listbox.Items.Refresh();
-               }));
+            comment_item i = new comment_item();
+            i._object_id = this._object_id; i._object_type = this._object_type;
+            this.comments_listbox.list_all_comments(i);
         }
 
         private int get_or_create_collection(naturenet_dataclassDataContext db, int user_id, int activity_id)
