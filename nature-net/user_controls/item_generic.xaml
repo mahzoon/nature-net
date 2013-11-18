@@ -17,12 +17,15 @@
                 <Label Name="user_desc" FontStyle="Italic" FontSize="10" >Description</Label>
             </StackPanel>
         </StackPanel>
-        <Label Name="desc" Margin="10,0,10,0" DockPanel.Dock="Top">Contributes/Suggests:</Label>
-        <Label Name="content" Margin="10,0,10,10" DockPanel.Dock="Top">
+            <Label Name="desc" Margin="10,0,10,0" DockPanel.Dock="Top">Contributes/Suggests:</Label>
+            <TextBlock Name="content" Margin="10,0,10,10" DockPanel.Dock="Top" TextWrapping="Wrap" TextAlignment="Justify">
+                The NatureNet project is a citizen science project that incorporates crowdsourced interaction design.  Participants can collect and analyse scientific data using their mobile computing devices and a multi-touch tabletop, and they can also participate in the re-design of the interface by which their scientific contributions are made.  The role of the crowd in Naturenet is extended to include interaction design in addition to data collection and analysis.
+            </TextBlock>
+        <!--<Label Name="content" Margin="10,0,10,10" DockPanel.Dock="Top">
             <AccessText TextWrapping="Wrap" TextAlignment="Justify" Margin="0,0,0,0">
                 The NatureNet project is a citizen science project that incorporates crowdsourced interaction design.  Participants can collect and analyse scientific data using their mobile computing devices and a multi-touch tabletop, and they can also participate in the re-design of the interface by which their scientific contributions are made.  The role of the crowd in Naturenet is extended to include interaction design in addition to data collection and analysis.
             </AccessText>
-        </Label>
+        </Label>-->
     </DockPanel>
     </Border>
 </UserControl>

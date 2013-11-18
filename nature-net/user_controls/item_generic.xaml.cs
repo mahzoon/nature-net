@@ -47,8 +47,8 @@ namespace nature_net.user_controls
             if (this.Tag != null)
                 id = ((int)this.Tag).ToString();
             string c = "";
-            if (((AccessText)this.content.Content).Text != null)
-                c = ((AccessText)this.content.Content).Text;
+            if (this.content.Text != null)
+                c = this.content.Text;
             string source = "";
             if (this.avatar.Source != null)
                 source = this.avatar.Source.ToString();

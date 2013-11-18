@@ -45,7 +45,12 @@ namespace nature_net.user_controls
 
         public void set_title(string t)
         {
-            this.title.Content = t;
+            this.title.Text = t;
+        }
+
+        public void set_icon(ImageSource ico)
+        {
+            this.window_icon.Source = ico;
         }
 
         public void hide_change_view()

@@ -15,14 +15,20 @@ namespace nature_net
     public class window_manager
     {
         public static Canvas main_canvas;
+        public static tab_control left_tab;
+        public static tab_control right_tab;
+
         public static List<BalloonDecorator> balloons = new List<BalloonDecorator>();
         public static List<int> downloaded_contributions = new List<int>();
         public static Dictionary<int, ImageSource> thumbnails = new Dictionary<int, ImageSource>();
         public static Dictionary<int, ImageSource> contributions = new Dictionary<int, ImageSource>();
+        public static Dictionary<int, MediaPlayer> media = new Dictionary<int, MediaPlayer>();
         public static List<window_frame> collection_frames = new List<window_frame>();
         public static List<window_frame> signup_frames = new List<window_frame>();
         public static List<window_frame> design_ideas_frames = new List<window_frame>();
         public static List<window_frame> image_display_frames = new List<window_frame>();
+
+        public static Dictionary<string, ImageSource> avatars = new Dictionary<string, ImageSource>();
 
         public static void open_collections_balloon(double y, string username)
         {
@@ -101,6 +107,24 @@ namespace nature_net
             window_manager.balloons.Remove(bd);
         }
 
+        public static void open_location_collection_window(string location, int location_id, double pos_x, double pos_y)
+        {
+            if (window_manager.collection_frames.Count + 1 > configurations.max_collection_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            window_content content = new window_content();
+            collection_listbox c_listbox = new collection_listbox();
+            c_listbox.parent = frame;
+            c_listbox.list_contributions_in_location(location_id);
+            content.initialize_contents(c_listbox);
+            frame.window_content.Content = content;
+
+            window_manager.collection_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            frame.set_title("Contributions in: " + location);
+        }
+
         public static void open_collection_window(string username, int userid, double pos_x, double pos_y)
         {
             if (window_manager.collection_frames.Count + 1 > configurations.max_collection_frame)
@@ -109,7 +133,8 @@ namespace nature_net
             window_frame frame = new window_frame();
             window_content content = new window_content();
             collection_listbox c_listbox = new collection_listbox();
-            c_listbox.list_all_images(username);
+            c_listbox.parent = frame;
+            c_listbox.list_all_contributions(username);
             content.initialize_contents(c_listbox, Type.GetType("nature_net.User"), userid, frame);
             frame.window_content.Content = content;
             content.list_all_comments();
@@ -119,22 +144,22 @@ namespace nature_net
             frame.set_title(username + "'s contributions");
         }
 
-        public static void open_image_window(int contribution_id, double pos_x, double pos_y)
+        public static void open_contribution_window(collection_item citem, double pos_x, double pos_y, string ctype)
         {
             if (window_manager.image_display_frames.Count + 1 > configurations.max_image_display_frame)
                 return;
 
             window_frame frame = new window_frame();
             window_content content = new window_content();
-            image_view img = new image_view();
-            img.view_image(contribution_id);
-            content.initialize_contents(img, Type.GetType("nature_net.Contribution"), contribution_id, frame);
+            contribution_view m = new contribution_view();
+            m.view_contribution(citem);
+            content.initialize_contents(m, Type.GetType("nature_net.Contribution"), citem._contribution.id, frame);
             frame.window_content.Content = content;
             window_manager.image_display_frames.Add(frame);
             open_window(frame, pos_x, pos_y);
-            img.center_image();
+            m.center_image();
             frame.hide_change_view();
-            frame.set_title("Image");
+            frame.set_title(ctype);
         }
 
         public static void open_design_idea_window(string[] idea_item, double pos_x, double pos_y)
@@ -149,7 +174,7 @@ namespace nature_net
             i.avatar.Source.Freeze();
             i.username.Content = idea_item[3]; i.user_desc.Content = idea_item[4];
             i.desc.Content = idea_item[5];
-            ((AccessText)i.content.Content).Text = idea_item[6];
+            i.content.Text = idea_item[6];
             i.Background = new SolidColorBrush(Colors.White);
             content.initialize_contents(i, Type.GetType("nature_net.Contribution"), Convert.ToInt32(idea_item[1]), frame);
 
@@ -185,17 +210,16 @@ namespace nature_net
                 return;
 
             window_frame frame = new window_frame();
-            //window_content content = new window_content();
-            //image_view img = new image_view();
-            //img.view_image(contribution_id);
-            //content.initialize_contents(img, Type.GetType("nature_net.Contribution"), contribution_id);
-            //frame.window_content.Content = content;
-            //content.list_all_comments();
-
+            signup s = new signup();
+            s.parent = frame;
+            s.load_window();
+            frame.window_content.Content = s;
+            
             window_manager.signup_frames.Add(frame);
             open_window(frame, pos_x, pos_y);
             frame.hide_change_view();
             frame.set_title("Sign up");
+            frame.set_icon(configurations.img_signup_window_icon);
         }
 
         private static void open_window(window_frame frame, double pos_x, double pos_y)
@@ -226,7 +250,7 @@ namespace nature_net
             FileInfo[] files = d.GetFiles();
             window_manager.downloaded_contributions.Clear();
             foreach (FileInfo f in files)
-                window_manager.downloaded_contributions.Add(Convert.ToInt32(f.Name.Substring(0, f.Name.Length - 4)));
+                window_manager.downloaded_contributions.Add(Convert.ToInt32(f.Name.Split(new char[] { '.' })[0]));
         }
 
         public static void refresh_thumbnails()
@@ -235,9 +259,47 @@ namespace nature_net
             FileInfo[] files = d.GetFiles();
             window_manager.thumbnails.Clear();
             foreach (FileInfo f in files)
-                window_manager.thumbnails.Add(Convert.ToInt32(f.Name.Substring(0, f.Name.Length - 4)),
+                window_manager.thumbnails.Add(Convert.ToInt32(f.Name.Split(new char[] { '.' })[0]),
                     new BitmapImage(new Uri(configurations.GetAbsoluteThumbnailPath() + f.Name)));
         }
+
+        public static void load_avatars()
+        {
+            DirectoryInfo d = new DirectoryInfo(configurations.GetAbsoluteAvatarPath());
+            FileInfo[] files = d.GetFiles();
+            window_manager.avatars.Clear();
+            foreach (FileInfo f in files)
+            {
+                ImageSource img = new BitmapImage(new Uri(f.FullName));
+                //avatars.Add(f.Name.Split(new char[] { '.' })[0], img);
+                avatars.Add(f.Name, img);
+            }
+        }
+
+        public static void load_users()
+        {
+            if (left_tab != null)
+                left_tab.load_users();
+            if (right_tab != null)
+                right_tab.load_users();
+        }
+
+        public static void load_activities()
+        {
+            if (left_tab != null)
+                left_tab.load_activities();
+            if (right_tab != null)
+                right_tab.load_activities();
+        }
+
+        public static void load_design_ideas()
+        {
+            if (left_tab != null)
+                left_tab.load_design_ideas();
+            if (right_tab != null)
+                right_tab.load_design_ideas();
+        }
+
     }
 
     public partial class Collection : INotifyPropertyChanging, INotifyPropertyChanged

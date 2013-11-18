@@ -40,10 +40,17 @@ namespace nature_net.user_controls
             this.signup.user_desc.Foreground = new SolidColorBrush(Colors.White);
             this.signup.top_panel.Margin = new Thickness(13, 13, 13, 13);
             this.signup.avatar.Source = configurations.img_signup_icon;
+            this.signup.PreviewTouchDown += new EventHandler<TouchEventArgs>(signup_PreviewTouchDown);
+        }
+
+        void signup_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            window_manager.open_signup_window(configurations.RANDOM(0, (int)window_manager.main_canvas.ActualWidth), 0);
         }
 
         public void list_all_users()
         {
+            this.users_list.parent = this;
             this.users_list.list_all_users();
         }
     }

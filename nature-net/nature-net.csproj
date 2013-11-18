@@ -94,11 +94,14 @@
     <Compile Include="user_controls\design_ideas_listbox.xaml.cs">
       <DependentUpon>design_ideas_listbox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="user_controls\image_view.xaml.cs">
-      <DependentUpon>image_view.xaml</DependentUpon>
+    <Compile Include="user_controls\contribution_view.xaml.cs">
+      <DependentUpon>contribution_view.xaml</DependentUpon>
     </Compile>
     <Compile Include="user_controls\item_generic.xaml.cs">
       <DependentUpon>item_generic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="user_controls\signup.xaml.cs">
+      <DependentUpon>signup.xaml</DependentUpon>
     </Compile>
     <Compile Include="user_controls\v_keyboard\IVirtualKeyboardInjectable.cs" />
     <Compile Include="user_controls\v_keyboard\KeyAssignment.cs" />
@@ -140,11 +143,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="user_controls\image_view.xaml">
+    <Page Include="user_controls\contribution_view.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="user_controls\item_generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="user_controls\signup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

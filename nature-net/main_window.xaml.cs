@@ -23,16 +23,17 @@ namespace nature_net
     {
         public MainWindow()
         {
-            InitializeComponent();
             iniparser parser = new iniparser();
             configurations.SetSettingsFromConfig(parser);
             configurations.LoadIconImages();
+            window_manager.load_avatars();
+            window_manager.refresh_downloaded_contributions();
+            if (configurations.use_existing_thumbnails)
+                window_manager.refresh_thumbnails();
 
-            var b = new ImageBrush();
-            b.ImageSource = configurations.img_background_pic;
-            this.workspace.Background = b;
-            //this.application_panel.Background = b;
-
+            InitializeComponent();
+            
+            this.load_background();
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
 
             this.workspace.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(workspace_ManipulationStarting);
@@ -55,16 +56,20 @@ namespace nature_net
 
             if (!finger && finger_supported)
                 e.Handled = true;
+
+            //TouchPoint tp = e.GetTouchPoint(sender as IInputElement);
+            //Point p = tp.Position;
+            //p.X = p.X - 245;
         }
 
         void item_droped_on_workspace(object sender, SurfaceDragDropEventArgs e)
         {
-            string[] data = ((string)e.Cursor.Data).Split(new Char[] { ';' });
+            string[] data = (e.Cursor.Data.ToString()).Split(new Char[] { ';' });
             if (data == null) return;
-            if (data.Count() < 3) return;
             string context = data[0];
             if (context == "user")
             {
+                if (data.Count() < 3) return;
                 string username = data[2];
                 int user_id = Convert.ToInt32(data[1]);
                 window_manager.open_collection_window(username, user_id,
@@ -78,11 +83,11 @@ namespace nature_net
                     e.Cursor.GetPosition(sender as IInputElement).Y);
                 e.Handled = true;
             }
-            if (context == "image")
+            if (context == "Image" || context == "Audio" || context == "Video" || context == "Media")
             {
-                int contribution_id = Convert.ToInt32(data[1]);
-                window_manager.open_image_window(contribution_id, e.Cursor.GetPosition(sender as IInputElement).X,
-                    e.Cursor.GetPosition(sender as IInputElement).Y);
+                nature_net.user_controls.collection_item ci = (nature_net.user_controls.collection_item)(e.Cursor.Data);
+                window_manager.open_contribution_window(ci, e.Cursor.GetPosition(sender as IInputElement).X,
+                    e.Cursor.GetPosition(sender as IInputElement).Y, context);
                 e.Handled = true;
             }
             if (context == "comment")
@@ -122,14 +127,52 @@ namespace nature_net
             throw new NotImplementedException();
         }
 
+        void load_background()
+        {
+            var b = new ImageBrush();
+            b.ImageSource = configurations.img_background_pic;
+            this.workspace.Background = b;
+            //this.application_panel.Background = b;
+
+            int i = 1;
+            foreach (Point p in configurations.locations)
+            {
+                Ellipse e = new Ellipse();
+                e.Fill = Brushes.Red;
+                e.Width = configurations.location_dot_diameter;
+                e.Height = configurations.location_dot_diameter;
+                Canvas.SetLeft(e, p.X);
+                Canvas.SetTop(e, p.Y);
+                e.Tag = i;
+                e.PreviewTouchDown += new EventHandler<TouchEventArgs>(reddot_PreviewTouchDown);
+                workspace.Children.Add(e);
+                TextBlock tb = new TextBlock();
+                tb.Text = i.ToString();
+                Canvas.SetLeft(tb, p.X + configurations.location_dot_diameter / 2 - 4);
+                Canvas.SetTop(tb, p.Y);
+                workspace.Children.Add(tb);
+                i++;
+            }
+        }
+
+        void reddot_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            Ellipse dot = (Ellipse)sender;
+            naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
+            var loc = from l in db.Locations
+                      where l.id == (int)dot.Tag
+                      select l;
+            Location location = loc.Single<Location>();
+            window_manager.open_location_collection_window(location.name, location.id, Canvas.GetLeft(dot), Canvas.GetTop(dot));
+        }
+
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            window_manager.refresh_downloaded_contributions();
-            if (configurations.use_existing_thumbnails)
-                window_manager.refresh_thumbnails();
-            this.left_tab.load_control(true);
-            this.right_tab.load_control(false);
+            this.left_tab.load_control(true, 0);
+            this.right_tab.load_control(false, 2);
             window_manager.main_canvas = this.workspace;
+            window_manager.left_tab = left_tab;
+            window_manager.right_tab = right_tab;
         }
 
         private void UpdateZOrder(UIElement element, bool bringToFront)

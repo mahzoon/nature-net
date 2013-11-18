@@ -24,6 +24,7 @@ namespace nature_net.user_controls
     public partial class design_ideas_listbox : UserControl
     {
         private readonly BackgroundWorker worker = new BackgroundWorker();
+
         public design_ideas_listbox parent;
 
         public design_ideas_listbox()
@@ -50,6 +51,7 @@ namespace nature_net.user_controls
 
         public void list_all_design_ideas()
         {
+            this.design_ideas_list.parent = this;
             this.design_ideas_list.list_all_design_ideas();
         }
     }

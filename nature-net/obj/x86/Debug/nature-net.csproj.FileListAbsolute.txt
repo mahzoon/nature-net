@@ -36,8 +36,6 @@ C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\w
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\collection_listbox.g.cs
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\window_content.g.cs
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.csproj.GenerateResource.Cache
-C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\image_view.baml
-C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\image_view.g.cs
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\nature-net.csprojResolveAssemblyReference.cache
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\custom_listbox.baml
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\custom_listbox.g.cs
@@ -45,3 +43,7 @@ C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\t
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\tab_control.baml
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\v_keyboard\virtual_keyboard.baml
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\v_keyboard\virtual_keyboard.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\contribution_view.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\contribution_view.g.cs
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\signup.baml
+C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\signup.g.cs

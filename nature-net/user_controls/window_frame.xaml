@@ -37,7 +37,14 @@
             </StackPanel>
             <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                 <Image Name="window_icon" Margin="5,5,5,5" Width="40"></Image>
-                <Label Name="title" Foreground="White" VerticalContentAlignment="Center">Title</Label>
+                <TextBlock Name="title" Foreground="White" TextWrapping="Wrap" Width="167" VerticalAlignment="Center">
+                    Title
+                </TextBlock>
+                <!--<Label Name="title" Foreground="White" VerticalContentAlignment="Stretch" >
+                    <AccessText TextWrapping="WrapWithOverflow" TextAlignment="Left" Margin="0,0,0,0">
+                        Title - The NatureNet project is a citizen science project that incorporates crowdsourced interaction design.  Participants can collect and analyse scientific data using their mobile computing devices and a multi-touch tabletop, and they can also participate in the re-design of the interface by which their scientific contributions are made.  The role of the crowd in Naturenet is extended to include interaction design in addition to data collection and analysis.
+                    </AccessText>
+                </Label>-->
             </StackPanel>
         </DockPanel>
         <ContentControl Name="window_content"></ContentControl>

@@ -25,10 +25,11 @@ namespace nature_net.user_controls
         private readonly BackgroundWorker worker = new BackgroundWorker();
         private int _object_id;
         private Type _object_type;
-        bool is_design_idea = false;
 
         private int comment_user_id;
         bool expand_state = false;
+
+        bool hide_expander = false;
 
         virtual_keyboard keyboard;
         ContentControl keyboard_frame;
@@ -55,12 +56,12 @@ namespace nature_net.user_controls
 
         void window_content_Loaded(object sender, RoutedEventArgs e)
         {
-            if (is_design_idea)
+            if (hide_expander)
                 this.expander.Visibility = System.Windows.Visibility.Collapsed;
 
             if (expand_state)
             {
-                if (!is_design_idea)
+                if (!hide_expander)
                     this.comments_listbox.Visibility = System.Windows.Visibility.Visible;
                 else
                     this.comments_listbox.Visibility = System.Windows.Visibility.Collapsed;
@@ -142,6 +143,7 @@ namespace nature_net.user_controls
 
         void submit_comment_TouchDown(object sender, TouchEventArgs e)
         {
+            bool is_design_idea = hide_expander;
             if (is_design_idea)
             {
                 naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
@@ -158,10 +160,12 @@ namespace nature_net.user_controls
                 map.date = DateTime.Now;
                 db.Collection_Contribution_Mappings.InsertOnSubmit(map);
                 db.SubmitChanges();
-                
-                ((design_ideas_listbox)the_item.Content).list_all_design_ideas();
-                if (((design_ideas_listbox)the_item.Content).parent != null)
-                    ((design_ideas_listbox)the_item.Content).parent.list_all_design_ideas();
+
+                if (the_item != null)
+                    ((design_ideas_listbox)the_item.Content).list_all_design_ideas();
+                window_manager.load_design_ideas();
+                //if (((design_ideas_listbox)the_item.Content).parent != null)
+                //    ((design_ideas_listbox)the_item.Content).parent.list_all_design_ideas();
             }
             else
             {
@@ -214,7 +218,7 @@ namespace nature_net.user_controls
         public void initialize_contents(UserControl uc, bool is_design, UserControl parent_frame)
         {
             //this.the_item.Content = uc;
-            this.is_design_idea = is_design;
+            this.hide_expander = is_design;
             this.add_comment_img.Source = configurations.img_drop_avatar_pic;
             //((design_ideas_listbox)the_item.Content).list_all_design_ideas();
             //((design_ideas_listbox)the_item.Content).desc.Visibility = System.Windows.Visibility.Collapsed;
@@ -223,6 +227,13 @@ namespace nature_net.user_controls
             //((design_ideas_listbox)the_item.Content).Background = new SolidColorBrush(Colors.White);
             this.expand_state = true;
             this.parent = parent_frame;
+        }
+
+        public void initialize_contents(UserControl uc)
+        {
+            this.expand_state = false;
+            this.hide_expander = true;
+            this.the_item.Content = uc;
         }
 
         public void list_all_comments()

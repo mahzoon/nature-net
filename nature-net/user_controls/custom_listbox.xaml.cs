@@ -27,6 +27,8 @@ namespace nature_net.user_controls
         public bool list_comments = false;
         public bool list_activities = false;
 
+        public UserControl parent;
+
         private readonly BackgroundWorker worker = new BackgroundWorker();
 
         public custom_listbox()
@@ -70,14 +72,14 @@ namespace nature_net.user_controls
             {
                 string idea = "design idea;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
                     (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" + 
-                    ((AccessText)i.content.Content).Text;
+                    i.content.Text;
                 start_drag(element, idea, e.TouchDevice, i.avatar.Source.Clone());
             }
             if (list_comments)
             {
                 string idea = "comment;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
                     (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
-                    ((AccessText)i.content.Content).Text;
+                    i.content.Text;
                 start_drag(element, idea, e.TouchDevice, i.avatar.Source.Clone());
             }
             e.Handled = true;
@@ -231,9 +233,9 @@ namespace nature_net.user_controls
                         //i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                         i.user_desc.Content = configurations.GetDate_Formatted(idea.design_idea.date);
                         i.desc.Content = "Contributed:";
-                        ((AccessText)i.content.Content).Text = idea.design_idea.note;
+                        i.content.Text = idea.design_idea.note;
                         if (configurations.use_avatar_drag) i.set_touchevent(this.avatar_drag);
-                        //i.Width = this.ActualWidth;
+                        if (parent != null) i.Width = parent.Width;
                         i.avatar.Source = idea.img;
                         i.Tag = idea.design_idea.id;
                         this._list.Items.Add(i);
@@ -292,6 +294,7 @@ namespace nature_net.user_controls
                         i.desc.Visibility = System.Windows.Visibility.Collapsed;
                         i.content.Visibility = System.Windows.Visibility.Collapsed;
                         i.avatar.Source = u.img;
+                        if (parent != null) i.Width = parent.Width;
                         i.Tag = u.user.id;
                         if (configurations.use_avatar_drag) i.set_touchevent(this.avatar_drag);
                         this._list.Items.Add(i);
@@ -344,8 +347,8 @@ namespace nature_net.user_controls
                        i.user_desc.Content = configurations.GetDate_Formatted(c.date);
                        //i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                        i.desc.Content = "Commented:";
-                       ((AccessText)i.content.Content).Text = c.note;
-                       //i.Width = this.ActualWidth;
+                       i.content.Text = c.note;
+                       if (parent != null) i.Width = parent.Width;
                        i.avatar.Source = new BitmapImage(new Uri(configurations.GetAbsoluteAvatarPath() + c.User.avatar));
                        i.Tag = c.id;
                        if (configurations.use_avatar_drag) i.set_touchevent(this.avatar_drag);
@@ -395,8 +398,8 @@ namespace nature_net.user_controls
                        i.user_desc.Content = configurations.GetDate_Formatted(a.creation_date);
                        //i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                        i.desc.Content = "Description:";
-                       ((AccessText)i.content.Content).Text = a.description;
-                       //i.Width = this.ActualWidth;
+                       i.content.Text = a.description;
+                       if (parent != null) i.Width = parent.Width;
                        i.avatar.Visibility = System.Windows.Visibility.Collapsed;
                        //i.avatar.Source = new BitmapImage(new Uri(configurations.GetAbsoluteAvatarPath() + c.User.avatar));
                        i.Tag = a.id;
