@@ -26,7 +26,9 @@ namespace nature_net
         public static bool use_existing_thumbnails = true;
         public static double drag_dy_dx_factor = 2.1;
         //public static double drag_dx_dy_factor = 1.0;
-        public static double drag_collection_theta = 45;
+        public static double drag_collection_theta = 5;
+        public static int min_touch_points = 2;
+        public static int max_consecutive_drag_points = 3;
         public static int design_idea_ext_window_width = 250;
         public static bool use_avatar_drag = true;
 
@@ -206,11 +208,11 @@ namespace nature_net
                 bi.EndInit();
                 bi.Freeze();
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 // could not create thumbnail -- reason: filenotfound or currupt download or ...
                 // write log
-                return img_not_found_image_pic;
+                return null;
             }
             return bi;
         }
@@ -228,22 +230,20 @@ namespace nature_net
             //uint[] framePixels = new uint[width * height];
             // Render the current frame into a bitmap
             var drawingVisual = new DrawingVisual();
-            using (var drawingContext = drawingVisual.RenderOpen())
+            try
             {
-                drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth));
-                drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth));
-                //drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, width, width));
-                //drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, width, width));
+                using (var drawingContext = drawingVisual.RenderOpen())
+                {
+                    drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth));
+                    drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth));
+                    //drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, width, width));
+                    //drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, width, width));
+                }
+                var renderTargetBitmap = new RenderTargetBitmap(width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth, 96, 96, PixelFormats.Default);
+                renderTargetBitmap.Render(drawingVisual);
+                return renderTargetBitmap;
             }
-            var renderTargetBitmap = new RenderTargetBitmap(width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth, 96, 96, PixelFormats.Default);
-            //var renderTargetBitmap = new RenderTargetBitmap(width, width, 96, 96, PixelFormats.Default);
-            renderTargetBitmap.Render(drawingVisual);
-
-            // Copy the pixels to the specified location
-            //renderTargetBitmap.CopyPixels(framePixels, 0, 0);
-
-            // Return the bitmap
-            return renderTargetBitmap;
+            catch (Exception) { return null; }
         }
 
         public static void SaveThumbnail(BitmapSource src, string filename)
@@ -254,6 +254,33 @@ namespace nature_net
             {
                 encoder.Save(fs);
             }
+        }
+
+        public static Visual GetDescendantByType(Visual element, Type type)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+            if (element.GetType() == type)
+            {
+                return element;
+            }
+            Visual foundElement = null;
+            if (element is FrameworkElement)
+            {
+                (element as FrameworkElement).ApplyTemplate();
+            }
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                Visual visual = VisualTreeHelper.GetChild(element, i) as Visual;
+                foundElement = GetDescendantByType(visual, type);
+                if (foundElement != null)
+                {
+                    break;
+                }
+            }
+            return foundElement;
         }
 
         public static void SetSettingsFromConfig(iniparser parser)

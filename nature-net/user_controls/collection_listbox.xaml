@@ -8,7 +8,7 @@
              d:DesignHeight="150">
 
     <s:SurfaceListBox Name="contributions" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                      ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="HorizontalOnly">
+                      ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="None">
 
         <ListBox.ItemsPanel>
             <ItemsPanelTemplate>

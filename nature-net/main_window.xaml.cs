@@ -105,6 +105,14 @@ namespace nature_net
             e.Mode = ManipulationModes.All;
             FrameworkElement element = (FrameworkElement)e.Source;
             if (element == null) return;
+
+            //if (e.Manipulators.Count() > 0)
+            //{
+            //    TouchDevice td = (TouchDevice)(e.Manipulators.First());
+            //    TouchPoint tp = td.GetTouchPoint(element);
+            //    e.Pivot = new ManipulationPivot(new Point(tp.Position.X, tp.Position.Y), 48);
+            //}
+            
             this.UpdateZOrder(element, true);
         }
 
@@ -117,9 +125,11 @@ namespace nature_net
             Point center = new Point(element.ActualWidth / 2, element.ActualHeight / 2);
             center = matrix.Transform(center);
             //matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y); 
-            matrix.RotateAt(e.DeltaManipulation.Rotation, center.X, center.Y);
+            matrix.RotateAt(e.DeltaManipulation.Rotation, e.ManipulationOrigin.X, e.ManipulationOrigin.Y);// center.X, center.Y);
             matrix.Translate(e.DeltaManipulation.Translation.X, e.DeltaManipulation.Translation.Y);
             element.RenderTransform = new MatrixTransform(matrix);
+            try { user_controls.window_frame w = (user_controls.window_frame)element; w.UpdateContents(); }
+            catch (Exception) { }
         }
 
         void workspace_ManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)

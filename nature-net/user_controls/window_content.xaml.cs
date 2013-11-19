@@ -40,7 +40,7 @@ namespace nature_net.user_controls
             InitializeComponent();
 
             this.submit_comment.Content = "Submit";
-            this.submit_comment.TouchDown += new EventHandler<TouchEventArgs>(submit_comment_TouchDown);
+            this.submit_comment.Click += new RoutedEventHandler(submit_comment_Click);
             this.leave_comment_panel.Visibility = System.Windows.Visibility.Collapsed;
 
             this.leave_comment_area.AllowDrop = true;
@@ -48,8 +48,7 @@ namespace nature_net.user_controls
             this.expander.Click += new RoutedEventHandler(expander_Click);
             
             this.comment_textbox.GotFocus += new RoutedEventHandler(comment_textbox_GotKeyboardFocus);
-            this.comment_textbox.LostFocus += new RoutedEventHandler(comment_textbox_LostKeyboardFocus);
-            this.LayoutUpdated += new EventHandler(window_content_LayoutUpdated);
+            //this.comment_textbox.LostFocus += new RoutedEventHandler(comment_textbox_LostKeyboardFocus);
             this.Unloaded += new RoutedEventHandler(window_content_Unloaded);
             this.Loaded += new RoutedEventHandler(window_content_Loaded);
         }
@@ -82,20 +81,6 @@ namespace nature_net.user_controls
         {
             if (keyboard_frame != null)
                 window_manager.main_canvas.Children.Remove(keyboard_frame);
-        }
-
-        void window_content_LayoutUpdated(object sender, EventArgs e)
-        {
-            if (keyboard_frame != null)
-            {
-                if (keyboard != null)
-                {
-                    if (keyboard_frame.Visibility == System.Windows.Visibility.Visible)
-                    {
-                        keyboard.MoveAlongWith(parent);
-                    }
-                }
-            }
         }
 
         void comment_textbox_LostKeyboardFocus(object sender, RoutedEventArgs e)
@@ -141,7 +126,7 @@ namespace nature_net.user_controls
             }
         }
 
-        void submit_comment_TouchDown(object sender, TouchEventArgs e)
+        void submit_comment_Click(object sender, RoutedEventArgs e)
         {
             bool is_design_idea = hide_expander;
             if (is_design_idea)
@@ -161,7 +146,7 @@ namespace nature_net.user_controls
                 db.Collection_Contribution_Mappings.InsertOnSubmit(map);
                 db.SubmitChanges();
 
-                if (the_item != null)
+                if (the_item.Content != null)
                     ((design_ideas_listbox)the_item.Content).list_all_design_ideas();
                 window_manager.load_design_ideas();
                 //if (((design_ideas_listbox)the_item.Content).parent != null)
@@ -267,6 +252,20 @@ namespace nature_net.user_controls
             db.Collections.InsertOnSubmit(cl);
             db.SubmitChanges();
             return cl.id;
+        }
+
+        public void UpdateKeyboardPosition()
+        {
+            if (keyboard_frame != null)
+            {
+                if (keyboard != null)
+                {
+                    if (keyboard_frame.Visibility == System.Windows.Visibility.Visible)
+                    {
+                        keyboard.MoveAlongWith(parent);
+                    }
+                }
+            }
         }
 
         public Control ControlToInjectInto

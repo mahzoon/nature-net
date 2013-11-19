@@ -157,7 +157,7 @@ namespace nature_net.user_controls
                 window_manager.contributions.Add(contribution_id, src);
                 e.Result = (object)contribution_id;
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 /// write log
                 e.Result = -1;

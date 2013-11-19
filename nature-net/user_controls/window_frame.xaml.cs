@@ -67,5 +67,13 @@ namespace nature_net.user_controls
         {
             window_manager.close_window(this);
         }
+
+        public void UpdateContents()
+        {
+            try { window_content w = (window_content)this.window_content.Content; w.UpdateKeyboardPosition(); }
+            catch (Exception) { }
+            try { signup s = (signup)this.window_content.Content; s.UpdateKeyboardLayout(); }
+            catch (Exception) { }
+        }
     }
 }

@@ -43,35 +43,47 @@ namespace nature_net.user_controls
 
         private Dictionary<TouchDevice, Rectangle> rectangles = new Dictionary<TouchDevice, Rectangle>();
 
+        UserControl parent_control;
+
         public virtual_keyboard()
         {
             InitializeComponent();
             click_sound = new SoundPlayer();
             click_sound.SoundLocation = configurations.keyboard_click_wav;
             click_sound.Load();
+            click_sound.Play();
             keys = ka.Assignments;
             keyboard.TouchDown += new EventHandler<TouchEventArgs>(keyboard_TouchDown);
             keyboard.TouchUp += new EventHandler<TouchEventArgs>(keyboard_TouchUp);
-            this.keyboard.Background = new ImageBrush(configurations.img_keyboard_pic);
+            //this.keyboard.Background = new ImageBrush(configurations.img_keyboard_pic);
+            this.keyboard.Source = configurations.img_keyboard_pic;
+            this.Loaded += new RoutedEventHandler(virtual_keyboard_Loaded);
+        }
+
+        void virtual_keyboard_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.UpdateLayout();
+            MoveAlongWith();
         }
 
         void keyboard_TouchUp(object sender, TouchEventArgs e)
         {
             if (rectangles.ContainsKey(e.TouchDevice))
             {
-                this.keyboard.Children.Remove(this.rectangles[e.TouchDevice]);
+                this.keyboard_canvas.Children.Remove(this.rectangles[e.TouchDevice]);
                 this.rectangles.Remove(e.TouchDevice);
             }
+            ((Image)sender).ReleaseTouchCapture(e.TouchDevice);
         }
 
         void keyboard_TouchDown(object sender, TouchEventArgs e)
         {
-            
+            e.TouchDevice.Capture(sender as IInputElement);
             Point p = e.GetTouchPoint(sender as IInputElement).Position;
             KeyAssignment key_code = get_key(p.X, p.Y, e.TouchDevice);
             if (key_code == null) return;
 
-            click_sound.PlaySync();
+            click_sound.Play();
             if (key_code.IsALTKey || key_code.IsControlKey) return;
             if (key_code.IsSHIFTKey || key_code.IsCAPSLOCK) { is_shifted = !is_shifted; return; }
             if (key_code.UnshiftedCodePoint == 0x0008) { this.DoBackspace(); return; }
@@ -93,7 +105,7 @@ namespace nature_net.user_controls
             r.Height = button_height; r.Width = rows[row][col];
             Canvas.SetLeft(r, sum - r.Width);
             Canvas.SetTop(r, row * (button_height + margin_h));
-            this.keyboard.Children.Add(r);
+            this.keyboard_canvas.Children.Add(r);
             this.rectangles.Add(td, r);
             return keys[row][col];
         }
@@ -102,7 +114,7 @@ namespace nature_net.user_controls
         {
             if (target_window != null)
             {
-                target_window.ControlToInjectInto.Focus();
+                //target_window.ControlToInjectInto.Focus();
                 //Microsoft.Surface.Presentation.Controls.SurfaceTextBox txtTarget = TargetWindow.ControlToInjectInto as Microsoft.Surface.Presentation.Controls.SurfaceTextBox;
                 TextBox txtTarget = target_window.ControlToInjectInto as TextBox;
                 if (txtTarget != null)
@@ -233,6 +245,12 @@ namespace nature_net.user_controls
             //textbox.Text = sOriginalContent.Insert(iCaretIndex, sStuffToInsert);
         }
 
+        public void MoveAlongWith()
+        {
+            if (parent_control != null)
+                MoveAlongWith(parent_control);
+        }
+
         public void MoveAlongWith(UserControl parent)
         {
             if (parent == null) return;
@@ -241,7 +259,7 @@ namespace nature_net.user_controls
             matrix.M11 = parent_matrix.Matrix.M11; matrix.M12 = parent_matrix.Matrix.M12;
             matrix.M21 = parent_matrix.Matrix.M21; matrix.M22 = parent_matrix.Matrix.M22;
             matrix.OffsetX = parent_matrix.Matrix.OffsetX; matrix.OffsetY = parent_matrix.Matrix.OffsetY;
-            double dx = (parent.ActualWidth / 2) - (this.ActualWidth / 2);
+            double dx = (parent.ActualWidth / 2) - (this.Width / 2);
             matrix.TranslatePrepend(dx, parent.ActualHeight);
             this.RenderTransform = new MatrixTransform(matrix);
         }

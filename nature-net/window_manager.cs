@@ -175,7 +175,9 @@ namespace nature_net
             i.username.Content = idea_item[3]; i.user_desc.Content = idea_item[4];
             i.desc.Content = idea_item[5];
             i.content.Text = idea_item[6];
+            i.content.Foreground = Brushes.Black;
             i.Background = new SolidColorBrush(Colors.White);
+            i.Width = frame.Width;
             content.initialize_contents(i, Type.GetType("nature_net.Contribution"), Convert.ToInt32(idea_item[1]), frame);
 
             frame.window_content.Content = content;

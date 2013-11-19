@@ -17,11 +17,12 @@
             <DockPanel Name="leave_comment_panel" LastChildFill="True">
                 <Image DockPanel.Dock="Left" Name="avatar" Height="75"></Image>
                 <s:SurfaceButton DockPanel.Dock="Right" Name="submit_comment" Width="65" HorizontalContentAlignment="Center"
-                                 VerticalContentAlignment="Center" FontFamily="Segoe UI" FontSize="14">
+                                 VerticalContentAlignment="Center" FontFamily="Segoe UI" FontSize="14" Background="Green"
+                                 Foreground="White">
                     Submit
                 </s:SurfaceButton>
-                <TextBox DockPanel.Dock="Left" Name="comment_textbox" TextWrapping="Wrap" AcceptsReturn="True"
-                         FontSize="15"></TextBox>
+                <s:SurfaceTextBox DockPanel.Dock="Left" Name="comment_textbox" TextWrapping="Wrap" AcceptsReturn="True"
+                         FontSize="15" FontFamily="Segoe UI" Background="White" Foreground="Black"></s:SurfaceTextBox>
             </DockPanel>
             <Image Name="add_comment_img" Height="75" Stretch="Fill" ></Image>
         </StackPanel>

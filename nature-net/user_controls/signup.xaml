@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:s="http://schemas.microsoft.com/surface/2008"
              mc:Ignorable="d" 
-             d:DesignHeight="435" d:DesignWidth="300">
+             d:DesignHeight="480" d:DesignWidth="300">
     
     <DockPanel LastChildFill="True" Background="Gainsboro">
         <TextBlock Name="desc" DockPanel.Dock="Top" HorizontalAlignment="Center" Foreground="Red" ></TextBlock>
@@ -22,9 +22,11 @@
                 <s:SurfacePasswordBox Name="textbox_password" DockPanel.Dock="Top" Width="150" FontFamily="Segoe UI" VerticalContentAlignment="Center"
                                        Foreground="Black" FontSize="14" Background="FloralWhite" BorderBrush="LightGray" BorderThickness="2">
                 </s:SurfacePasswordBox>
-                <s:SurfaceCheckBox Name="checkbox_agreement" DockPanel.Dock="Top" Margin="5,5,5,5" Foreground="Black" IsThreeState="False"
-                                   IsChecked="False" IsEnabled="True" FontFamily="Segoe UI" FontSize="14" Background="White">
-                    I agree that ...
+                <s:SurfaceCheckBox Name="checkbox_agreement" DockPanel.Dock="Top" Margin="5,5,5,5" Height="42"
+                                   Background="Silver" BorderBrush="Black" BorderThickness="3">
+                    <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="Black" TextWrapping="Wrap">
+                        I Agree to Terms and Conditions
+                    </TextBlock>
                 </s:SurfaceCheckBox>
             </DockPanel>
             <TextBlock Name="why" TextWrapping="Wrap" Width="140" Padding="5,10,10,10" TextAlignment="Justify" Foreground="Black">
@@ -33,7 +35,7 @@
         </StackPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
             <Label Name="label_choose_avatar" FontSize="14">Choose an Avatar:</Label>
-            <ListBox Name="listbox_avatars" Margin="5,0,5,0" Height="105"
+            <s:SurfaceListBox Name="listbox_avatars" Margin="5,0,5,0" Height="125"
                      ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                      ScrollViewer.VerticalScrollBarVisibility="Hidden">
                 <ListBox.ItemsPanel>
@@ -46,7 +48,7 @@
                         <Image Source="{Binding ImageSource}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </DataTemplate>
                 </ListBox.DataContext>
-            </ListBox>
+            </s:SurfaceListBox>
             <s:SurfaceButton Name="button_submit" Background="Green" Width="100" Foreground="White"
                              VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                              HorizontalAlignment="Right" Margin="0,5,5,0">Submit</s:SurfaceButton>

@@ -32,16 +32,15 @@ namespace nature_net.user_controls
             textbox_name.GotFocus += new RoutedEventHandler(textbox_GotFocus);
             textbox_email.GotFocus += new RoutedEventHandler(textbox_GotFocus);
             textbox_password.GotFocus += new RoutedEventHandler(textbox_GotFocus);
-            textbox_name.LostFocus += new RoutedEventHandler(textbox_LostFocus);
-            textbox_email.LostFocus += new RoutedEventHandler(textbox_LostFocus);
-            textbox_password.LostFocus += new RoutedEventHandler(textbox_LostFocus);
+            //textbox_name.LostFocus += new RoutedEventHandler(textbox_LostFocus);
+            //textbox_email.LostFocus += new RoutedEventHandler(textbox_LostFocus);
+            //textbox_password.LostFocus += new RoutedEventHandler(textbox_LostFocus);
             this.button_submit.Click+=new RoutedEventHandler(button_submit_Click);
-            this.LayoutUpdated += new EventHandler(signup_LayoutUpdated);
 
             this.checkbox_agreement.IsEnabled = true;
         }
 
-        void signup_LayoutUpdated(object sender, EventArgs e)
+        public void UpdateKeyboardLayout()
         {
             if (keyboard_frame != null)
             {
