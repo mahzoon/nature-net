@@ -37,6 +37,8 @@ namespace nature_net.user_controls
 
         private List<System.Windows.Input.TouchPoint> touch_points = new List<System.Windows.Input.TouchPoint>();
         private int consecutive_drag_points = 0;
+        ListBoxItem last_dragged_element = null;
+        double last_scroll_offset = 0;
         
         public collection_listbox()
         {
@@ -58,14 +60,15 @@ namespace nature_net.user_controls
         void contributions_PreviewTouchMove(object sender, System.Windows.Input.TouchEventArgs e)
         {
             //if (parent == null) return;
+
             FrameworkElement findSource = e.OriginalSource as FrameworkElement;
             ListBoxItem element = null;
             while (element == null && findSource != null)
                 if ((element = findSource as ListBoxItem) == null)
                     findSource = VisualTreeHelper.GetParent(findSource) as FrameworkElement;
 
-            if (element == null)
-                return;
+            if (element != null)
+                last_dragged_element = element;
 
             //TextBlock tm = new TextBlock(); tm.Foreground = Brushes.White;
             //Canvas.SetLeft(tm, 200); Canvas.SetTop(tm, debug_var);
@@ -98,9 +101,9 @@ namespace nature_net.user_controls
             //double dx = touch_points[touch_points.Count - 1].Position.X - touch_points[0].Position.X;
             double dy = touch_points[touch_points.Count - 1].Position.Y - touch_points[touch_points.Count - 2].Position.Y;
             double dx = touch_points[touch_points.Count - 1].Position.X - touch_points[touch_points.Count - 2].Position.X;
-
             double size_n = Math.Sqrt(dx * dx + dy * dy);
             dx = dx / size_n; dy = dy / size_n;
+            if (dx == double.NaN || dy == double.NaN) return;
             //Point dxy = mat2.Transform(new Point(dx, dy));
             //dx = Math.Abs(dx); dy = Math.Abs(dy);
 
@@ -162,8 +165,23 @@ namespace nature_net.user_controls
             //debug_canvas.Children.Add(t2);
             //debug_var = debug_var + 30;
             //if (debug_var > 600) { debug_var = 10; debug_canvas.Children.RemoveRange(0, debug_canvas.Children.Count); }
-            /////////
 
+            //draw points
+            //double radius = 5;
+            //Ellipse ell = new Ellipse();
+            //ell.Fill = Brushes.White;
+            //ell.Width = radius * 2;
+            //ell.Height = radius * 2;
+            //double center_x = e.GetTouchPoint(window_manager.main_canvas).Position.X;
+            //double center_y = e.GetTouchPoint(window_manager.main_canvas).Position.Y;
+            //double left = center_x - radius;
+            //double top = center_y - radius;
+            //Canvas.SetLeft(ell, left);
+            //Canvas.SetTop(ell, top);
+            //window_manager.main_canvas.Children.Add(ell);
+
+            /////////
+            
             if (theta < configurations.drag_collection_theta)
             {
                 if (consecutive_drag_points < configurations.max_consecutive_drag_points)
@@ -172,25 +190,32 @@ namespace nature_net.user_controls
                 }
                 else
                 {
-                    Image i = (Image)element.DataContext;
-                    if (i.Tag == null) return;
-                    collection_item item = (collection_item)i.Tag;
-                    start_drag(element, item, e.TouchDevice, i.Source.Clone());
-                    touch_points.Clear();
-                    consecutive_drag_points = 0;
-                    e.Handled = true;
-                    return;
+                    if (element == null) element = last_dragged_element;
+                    if (element != null)
+                    {
+                        Image i = (Image)element.DataContext;
+                        if (i.Tag == null) return;
+                        collection_item item = (collection_item)i.Tag;
+                        start_drag(element, item, e.TouchDevice, i.Source.Clone());
+                        touch_points.Clear();
+                        consecutive_drag_points = 0;
+                        e.Handled = true;
+                        return;
+                    }
                 }
             }
-            
-            if (dx == 0) return;
             SurfaceScrollViewer scroll = configurations.GetDescendantByType(this.contributions, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
-            //double dv = touch_points[touch_points.Count - 1].Position.X - touch_points[touch_points.Count - 3].Position.X;
-            scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + (-2 * dx));
+            double dv = touch_points[touch_points.Count - 1].Position.X - touch_points[0].Position.X;
+            //double new_offset = scroll.HorizontalOffset + (-1 * configurations.scroll_scale_factor * dx);
+            double new_offset = last_scroll_offset + (-1 * dv);
+            try { scroll.ScrollToHorizontalOffset(new_offset); }
+            catch (Exception) { }
         }
 
         void contributions_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            SurfaceScrollViewer scroll = configurations.GetDescendantByType(this.contributions, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
+            last_scroll_offset = scroll.HorizontalOffset;
             bool r = e.TouchDevice.Capture(this.contributions as IInputElement, CaptureMode.SubTree);
             //if (!r)
             //{
@@ -227,8 +252,15 @@ namespace nature_net.user_controls
             if (touch_points.Count > 0)
             {
                 SurfaceScrollViewer scroll = configurations.GetDescendantByType(this.contributions, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
-                double dv = e.GetTouchPoint(this.contributions).Position.X - touch_points[touch_points.Count - 1].Position.X;
-                scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + (-2 * dv));
+                //double dv = e.GetTouchPoint(this.contributions).Position.X - touch_points[touch_points.Count - 1].Position.X;
+                double dv = e.GetTouchPoint(this.contributions).Position.X - touch_points[0].Position.X;
+                try
+                {
+                    //scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + (-2 * dv));
+                    scroll.ScrollToHorizontalOffset(last_scroll_offset + (-1 * dv));
+                }
+                catch (Exception) { }
+                last_scroll_offset = scroll.HorizontalOffset;
             }
 
             this.touch_points.Clear();
@@ -302,9 +334,6 @@ namespace nature_net.user_controls
                        else
                            img.Source = configurations.img_not_found_image_pic;
                        img.Tag = i;
-                       //img.PreviewTouchDown += new EventHandler<System.Windows.Input.TouchEventArgs>(contributions_TouchDown);
-                       //img.PreviewTouchMove += new EventHandler<System.Windows.Input.TouchEventArgs>(contributions_PreviewTouchMove);
-                       //img.PreviewTouchUp += new EventHandler<System.Windows.Input.TouchEventArgs>(contributions_PreviewTouchUp);
                        this.contributions.Items.Add(img);
                    }
                    if (items.Count == 0)
@@ -364,9 +393,9 @@ namespace nature_net.user_controls
 
                 ImageSource img = null;
                 if (ci.is_image)
-                    img = configurations.GetThumbnailFromImage(i.ToString() + ext, configurations.thumbnail_pixel_width);
+                    img = configurations.GetThumbnailFromImage(i.ToString() + ext, configurations.thumbnail_pixel_height);
                 if (ci.is_video)
-                    img = configurations.GetThumbnailFromVideo(i.ToString() + ext, configurations.thumbnail_video_span, configurations.thumbnail_pixel_width);
+                    img = configurations.GetThumbnailFromVideo(i.ToString() + ext, configurations.thumbnail_video_span, configurations.thumbnail_pixel_height);
                 if (ci.is_audio)
                     img = configurations.img_sound_image_pic;
                 if (img == null)
@@ -393,7 +422,8 @@ namespace nature_net.user_controls
             i2.Source = i;
             ContentControl cursorVisual = new ContentControl()
             {
-                Content = i2,
+                //Content = i2,
+                Content = item.Content,
                 Style = FindResource("CursorStyle") as Style
             };
 

@@ -44,6 +44,26 @@ namespace nature_net
             SurfaceDragDrop.AddDropHandler(this.workspace, new EventHandler<SurfaceDragDropEventArgs>(item_droped_on_workspace));
 
             application_panel.PreviewTouchDown += new EventHandler<TouchEventArgs>(application_panel_PreviewTouchDown);
+            //application_panel.PreviewMouseDown += new MouseButtonEventHandler(application_panel_PreviewMouseDown);
+        }
+
+        void application_panel_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //debug things!
+            //if (e.RightButton == MouseButtonState.Pressed)
+            //{
+            //    UIElement[] elements = new UIElement[window_manager.main_canvas.Children.Count];
+            //    window_manager.main_canvas.Children.CopyTo(elements, 0);
+            //    foreach (UIElement element in elements)
+            //    {
+            //        try
+            //        {
+            //            Shape shape = element as Shape;
+            //            window_manager.main_canvas.Children.Remove(shape);
+            //        }
+            //        catch (Exception) { continue; }
+            //    }
+            //}
         }
 
         void application_panel_PreviewTouchDown(object sender, TouchEventArgs e)

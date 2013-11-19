@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Surface.Presentation;
 using System.ComponentModel;
 using System.Windows.Threading;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace nature_net.user_controls
 {
@@ -31,6 +32,13 @@ namespace nature_net.user_controls
 
         private readonly BackgroundWorker worker = new BackgroundWorker();
 
+        private List<System.Windows.Input.TouchPoint> touch_points = new List<System.Windows.Input.TouchPoint>();
+        private int consecutive_drag_points = 0;
+        ListBoxItem last_dragged_element = null;
+        double last_scroll_offset = 0;
+        private Point drag_direction1 = new Point(1, 0);
+        private Point drag_direction2 = new Point(-1, 0);
+
         public custom_listbox()
         {
             InitializeComponent();
@@ -42,7 +50,9 @@ namespace nature_net.user_controls
             this._list.SelectionChanged += new SelectionChangedEventHandler(_list_SelectionChanged);
             if (!configurations.use_avatar_drag)
             {
-                this._list.TouchDown += new EventHandler<TouchEventArgs>(_list_TouchDown);
+                SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
+                scroll.PanningMode = PanningMode.None;
+                this._list.PreviewTouchDown += new EventHandler<TouchEventArgs>(_list_PreviewTouchDown);
                 this._list.PreviewTouchMove += new EventHandler<TouchEventArgs>(_list_PreviewTouchMove);
                 this._list.PreviewTouchUp += new EventHandler<TouchEventArgs>(_list_PreviewTouchUp);
             }
@@ -58,6 +68,12 @@ namespace nature_net.user_controls
                 if ((element = findSource as ListBoxItem) == null)
                     findSource = VisualTreeHelper.GetParent(findSource) as FrameworkElement;
 
+            avatar_drag(element, e.TouchDevice);
+            e.Handled = true;
+        }
+
+        private void avatar_drag(ListBoxItem element, TouchDevice touch_device)
+        {
             if (element == null)
                 return;
 
@@ -66,56 +82,129 @@ namespace nature_net.user_controls
             if (list_users)
             {
                 string username_id = "user;" + ((int)i.Tag).ToString() + ";" + (string)i.username.Content + ";" + i.avatar.Source.ToString();
-                start_drag(element, username_id, e.TouchDevice, i.avatar.Source.Clone());
+                start_drag(element, username_id, touch_device, i.avatar.Source.Clone());
             }
             if (list_design_ideas)
             {
                 string idea = "design idea;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
-                    (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" + 
+                    (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
                     i.content.Text;
-                start_drag(element, idea, e.TouchDevice, i.avatar.Source.Clone());
+                start_drag(element, idea, touch_device, i.avatar.Source.Clone());
             }
             if (list_comments)
             {
                 string idea = "comment;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
                     (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
                     i.content.Text;
-                start_drag(element, idea, e.TouchDevice, i.avatar.Source.Clone());
+                start_drag(element, idea, touch_device, i.avatar.Source.Clone());
             }
-            e.Handled = true;
         }
 
         private void _list_PreviewTouchMove(object sender, TouchEventArgs e)
         {
-            TouchPointCollection points = e.GetIntermediateTouchPoints(sender as IInputElement);
-            if (points.Count < 2) return;
-            double dx = points[points.Count - 1].Position.X - points[0].Position.X;
-            if (dx > 0)
+            FrameworkElement findSource = e.OriginalSource as FrameworkElement;
+            ListBoxItem element = null;
+            while (element == null && findSource != null)
+                if ((element = findSource as ListBoxItem) == null)
+                    findSource = VisualTreeHelper.GetParent(findSource) as FrameworkElement;
+
+            if (element != null)
+                last_dragged_element = element;
+            this.touch_points.Add(e.GetTouchPoint(this._list as IInputElement));
+            if (touch_points.Count < configurations.min_touch_points) return;
+            double dy = touch_points[touch_points.Count - 1].Position.Y - touch_points[touch_points.Count - 2].Position.Y;
+            double dx = touch_points[touch_points.Count - 1].Position.X - touch_points[touch_points.Count - 2].Position.X;
+            double size_n = Math.Sqrt(dx * dx + dy * dy);
+            dx = dx / size_n; dy = dy / size_n;
+            if (dx == double.NaN || dy == double.NaN) return;
+            double theta1 = Math.Acos(dx * drag_direction1.X + dy * drag_direction1.Y);
+            double theta2 = Math.Acos(dx * drag_direction2.X + dy * drag_direction2.Y);
+            //convert to degree
+            theta1 = theta1 * 180 / Math.PI;
+            theta2 = theta2 * 180 / Math.PI;
+            double theta = (theta1 < theta2) ? theta1 : theta2;
+            if (theta < configurations.drag_collection_theta)
             {
-                double dy = points[0].Position.Y - points[points.Count - 1].Position.Y;
-                if (Math.Abs(dy) / dx < configurations.drag_dy_dx_factor)
+                if (consecutive_drag_points < configurations.max_consecutive_drag_points)
                 {
-                    avatar_drag(sender, e);
+                    consecutive_drag_points++;
+                }
+                else
+                {
+                    if (element == null) element = last_dragged_element;
+                    if (element != null)
+                    {
+                        avatar_drag(element, e.TouchDevice);
+                        touch_points.Clear();
+                        consecutive_drag_points = 0;
+                        e.Handled = true;
+                        return;
+                    }
                 }
             }
+            SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
+            double dv = touch_points[touch_points.Count - 1].Position.Y - touch_points[0].Position.Y;
+            //double new_offset = scroll.HorizontalOffset + (-1 * configurations.scroll_scale_factor * dx);
+            double new_offset = last_scroll_offset + (-1 * dv);
+            try { scroll.ScrollToVerticalOffset(new_offset); }
+            catch (Exception) { }
         }
 
-        private void _list_TouchDown(object sender, TouchEventArgs e)
+        private void _list_PreviewTouchDown(object sender, TouchEventArgs e)
         {
-            e.TouchDevice.Capture(sender as IInputElement);
+            SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
+            last_scroll_offset = scroll.VerticalOffset;
+            bool r = e.TouchDevice.Capture(this._list as IInputElement, CaptureMode.SubTree);
+            e.Handled = true;
         }
 
         private void _list_PreviewTouchUp(object sender, TouchEventArgs e)
         {
-            UIElement element = sender as UIElement;
-            element.ReleaseTouchCapture(e.TouchDevice);
-            e.Handled = false;
+            double dv = 0;
+            if (touch_points.Count > 0)
+                dv = e.GetTouchPoint(this._list).Position.Y - touch_points[0].Position.Y;
+            if (dv < configurations.tap_error)
+            {
+                FrameworkElement findSource = e.OriginalSource as FrameworkElement;
+                ListBoxItem element = null;
+                while (element == null && findSource != null)
+                    if ((element = findSource as ListBoxItem) == null)
+                        findSource = VisualTreeHelper.GetParent(findSource) as FrameworkElement;
+                if (element != null)
+                {
+                    _list.SelectedItem = element;
+                    _list_SelectionChanged((item_generic)element.DataContext);
+                }
+            }
+            else
+            {
+                SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
+                //double dv = e.GetTouchPoint(this.contributions).Position.X - touch_points[touch_points.Count - 1].Position.X;
+
+                try
+                {
+                    //scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + (-2 * dv));
+                    scroll.ScrollToVerticalOffset(last_scroll_offset + (-1 * dv));
+                }
+                catch (Exception) { }
+                last_scroll_offset = scroll.VerticalOffset;
+            }
+
+            this.touch_points.Clear();
+            consecutive_drag_points = 0;
+            UIElement element2 = sender as UIElement;
+            element2.ReleaseTouchCapture(e.TouchDevice);
         }
 
         private void _list_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count == 0) return;
             item_generic item = (item_generic)e.AddedItems[0];
+            _list_SelectionChanged(item);
+        }
+
+        private void _list_SelectionChanged(item_generic item)
+        {
             if (list_design_ideas)
             {
                 string[] idea_item = ("design idea;" + item.ToString()).Split(new Char[] { ';' });
@@ -153,7 +242,8 @@ namespace nature_net.user_controls
             i2.Source = i; i2.Stretch = Stretch.Uniform;
             ContentControl cursorVisual = new ContentControl()
             {
-                Content = i2,
+                //Content = i2,
+                Content = item.Content,
                 Style = FindResource("CursorStyle") as Style
             };
 
@@ -235,7 +325,7 @@ namespace nature_net.user_controls
                         i.desc.Content = "Contributed:";
                         i.content.Text = idea.design_idea.note;
                         if (configurations.use_avatar_drag) i.set_touchevent(this.avatar_drag);
-                        if (parent != null) i.Width = parent.Width;
+                        if (parent != null) i.Width = parent.Width - 10;
                         i.avatar.Source = idea.img;
                         i.Tag = idea.design_idea.id;
                         this._list.Items.Add(i);

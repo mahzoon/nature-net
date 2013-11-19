@@ -20,17 +20,21 @@ namespace nature_net
         public static int max_collection_frame = 5;
         public static int max_image_display_frame = 5;
         public static int max_design_ideas_frame = 5;
-        public static int thumbnail_pixel_width = 100;
+        //public static int thumbnail_pixel_width = 100;
         public static int thumbnail_pixel_height = 100;
         public static TimeSpan thumbnail_video_span = new TimeSpan(0, 0, 2);
         public static bool use_existing_thumbnails = true;
         public static double drag_dy_dx_factor = 2.1;
         //public static double drag_dx_dy_factor = 1.0;
+
         public static double drag_collection_theta = 5;
+        public static double scroll_scale_factor = 5;
         public static int min_touch_points = 2;
-        public static int max_consecutive_drag_points = 3;
+        public static int max_consecutive_drag_points = 5;
+        public static double tap_error = 2;
+        
         public static int design_idea_ext_window_width = 250;
-        public static bool use_avatar_drag = true;
+        public static bool use_avatar_drag = false;
 
         public static List<Point> locations = new List<Point>();
         public static int location_dot_diameter = 20;
@@ -195,14 +199,15 @@ namespace nature_net
             }
         }
 
-        public static ImageSource GetThumbnailFromImage(string filename, int width)
+        public static ImageSource GetThumbnailFromImage(string filename, int height)
         {
             BitmapImage bi = new BitmapImage();
             try
             {
                 // create the thumbnail
                 bi.BeginInit();
-                bi.DecodePixelWidth = width;
+                bi.DecodePixelHeight = height;
+                //bi.DecodePixelWidth = width;
                 bi.CacheOption = BitmapCacheOption.OnLoad;
                 bi.UriSource = new Uri(configurations.GetAbsoluteContributionPath() + filename);
                 bi.EndInit();
@@ -217,7 +222,7 @@ namespace nature_net
             return bi;
         }
 
-        public static ImageSource GetThumbnailFromVideo(string filename, TimeSpan interval, int width)
+        public static ImageSource GetThumbnailFromVideo(string filename, TimeSpan interval, int height)
         {
             MediaPlayer _mediaPlayer = new MediaPlayer();
             _mediaPlayer.ScrubbingEnabled = true;
@@ -234,12 +239,12 @@ namespace nature_net
             {
                 using (var drawingContext = drawingVisual.RenderOpen())
                 {
-                    drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth));
-                    drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth));
+                    drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, height * _mediaPlayer.NaturalVideoWidth / _mediaPlayer.NaturalVideoHeight, height));
+                    drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, height * _mediaPlayer.NaturalVideoWidth / _mediaPlayer.NaturalVideoHeight, height));
                     //drawingContext.DrawVideo(_mediaPlayer, new System.Windows.Rect(0, 0, width, width));
                     //drawingContext.DrawImage(src, new System.Windows.Rect(0, 0, width, width));
                 }
-                var renderTargetBitmap = new RenderTargetBitmap(width, width * _mediaPlayer.NaturalVideoHeight / _mediaPlayer.NaturalVideoWidth, 96, 96, PixelFormats.Default);
+                var renderTargetBitmap = new RenderTargetBitmap(height * _mediaPlayer.NaturalVideoWidth / _mediaPlayer.NaturalVideoHeight, height, 96, 96, PixelFormats.Default);
                 renderTargetBitmap.Render(drawingVisual);
                 return renderTargetBitmap;
             }

@@ -36,8 +36,15 @@ namespace nature_net.user_controls
             //textbox_email.LostFocus += new RoutedEventHandler(textbox_LostFocus);
             //textbox_password.LostFocus += new RoutedEventHandler(textbox_LostFocus);
             this.button_submit.Click+=new RoutedEventHandler(button_submit_Click);
+            this.Unloaded += new RoutedEventHandler(signup_Unloaded);
 
             this.checkbox_agreement.IsEnabled = true;
+        }
+
+        void signup_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (keyboard_frame != null)
+                window_manager.main_canvas.Children.Remove(keyboard_frame);
         }
 
         public void UpdateKeyboardLayout()
