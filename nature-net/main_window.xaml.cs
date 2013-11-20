@@ -21,6 +21,10 @@ namespace nature_net
     /// </summary>
     public partial class MainWindow : SurfaceWindow
     {
+        private double debug_var = 10;
+        private Canvas debug_canvas = new Canvas();
+        private int num_updates = 0;
+
         public MainWindow()
         {
             iniparser parser = new iniparser();
@@ -36,9 +40,12 @@ namespace nature_net
             this.load_background();
             this.Loaded += new RoutedEventHandler(MainWindow_Loaded);
 
-            this.workspace.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(workspace_ManipulationStarting);
-            this.workspace.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(workspace_ManipulationDelta);
-            ///this.workspace.ManipulationBoundaryFeedback += new EventHandler<ManipulationBoundaryFeedbackEventArgs>(workspace_ManipulationBoundaryFeedback);
+            if (!configurations.use_scatter_view)
+            {
+                this.workspace.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(workspace_ManipulationStarting);
+                this.workspace.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(workspace_ManipulationDelta);
+                ///this.workspace.ManipulationBoundaryFeedback += new EventHandler<ManipulationBoundaryFeedbackEventArgs>(workspace_ManipulationBoundaryFeedback);
+            }
 
             this.workspace.AllowDrop = true;
             SurfaceDragDrop.AddDropHandler(this.workspace, new EventHandler<SurfaceDragDropEventArgs>(item_droped_on_workspace));
@@ -75,11 +82,22 @@ namespace nature_net
             bool tag = Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsTagRecognized(e.TouchDevice);
 
             if (!finger && finger_supported)
+            {
                 e.Handled = true;
+                return;
+            }
 
-            //TouchPoint tp = e.GetTouchPoint(sender as IInputElement);
-            //Point p = tp.Position;
-            //p.X = p.X - 245;
+            TouchPoint tp = e.GetTouchPoint(sender as IInputElement);
+            ////Point p = tp.Position;
+            ////p.X = p.X - 245;
+
+            //TextBlock tb = new TextBlock();
+            //tb.Text = tp.Position.X.ToString() + ", " + tp.Position.Y.ToString();
+            //Canvas.SetLeft(tb, 200); Canvas.SetTop(tb, debug_var);
+            //tb.FontSize = 16; tb.FontWeight = FontWeights.Bold;
+            //workspace.Children.Add(tb);
+            //debug_var = debug_var + 30;
+            //if (debug_var > 700) { debug_var = 10; debug_canvas.Children.RemoveRange(0, debug_canvas.Children.Count); }
         }
 
         void item_droped_on_workspace(object sender, SurfaceDragDropEventArgs e)
@@ -148,8 +166,13 @@ namespace nature_net
             matrix.RotateAt(e.DeltaManipulation.Rotation, e.ManipulationOrigin.X, e.ManipulationOrigin.Y);// center.X, center.Y);
             matrix.Translate(e.DeltaManipulation.Translation.X, e.DeltaManipulation.Translation.Y);
             element.RenderTransform = new MatrixTransform(matrix);
-            try { user_controls.window_frame w = (user_controls.window_frame)element; w.UpdateContents(); }
-            catch (Exception) { }
+            num_updates++;
+            if (num_updates > configurations.max_num_content_update)
+            {
+                num_updates = 0;
+                try { user_controls.window_frame w = (user_controls.window_frame)element; w.UpdateContents(); }
+                catch (Exception) { }
+            }
         }
 
         void workspace_ManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)
@@ -179,7 +202,7 @@ namespace nature_net
                 TextBlock tb = new TextBlock();
                 tb.Text = i.ToString();
                 Canvas.SetLeft(tb, p.X + configurations.location_dot_diameter / 2 - 4);
-                Canvas.SetTop(tb, p.Y);
+                Canvas.SetTop(tb, p.Y + configurations.location_dot_diameter / 2 - 8);
                 workspace.Children.Add(tb);
                 i++;
             }
@@ -198,11 +221,22 @@ namespace nature_net
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            if (configurations.use_scatter_view)
+            {
+                this.sv.Width = this.workspace.ActualWidth;
+                this.sv.Height = this.workspace.ActualHeight;
+            }
+
             this.left_tab.load_control(true, 0);
             this.right_tab.load_control(false, 2);
             window_manager.main_canvas = this.workspace;
+            window_manager.main_scatter_view = this.sv;
             window_manager.left_tab = left_tab;
             window_manager.right_tab = right_tab;
+
+            debug_canvas.Width = window_manager.main_canvas.ActualWidth;
+            debug_canvas.Height = window_manager.main_canvas.ActualHeight;
+            window_manager.main_canvas.Children.Add(debug_canvas);
         }
 
         private void UpdateZOrder(UIElement element, bool bringToFront)

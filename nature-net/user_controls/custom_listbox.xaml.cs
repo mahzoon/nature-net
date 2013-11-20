@@ -154,6 +154,7 @@ namespace nature_net.user_controls
         {
             SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
             last_scroll_offset = scroll.VerticalOffset;
+            scroll.Elasticity = new Vector(0.0, 0.4);
             bool r = e.TouchDevice.Capture(this._list as IInputElement, CaptureMode.SubTree);
             e.Handled = true;
         }
@@ -180,7 +181,6 @@ namespace nature_net.user_controls
             {
                 SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
                 //double dv = e.GetTouchPoint(this.contributions).Position.X - touch_points[touch_points.Count - 1].Position.X;
-
                 try
                 {
                     //scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset + (-2 * dv));
@@ -240,10 +240,11 @@ namespace nature_net.user_controls
         {
             Image i2 = new Image();
             i2.Source = i; i2.Stretch = Stretch.Uniform;
+            item_generic i3 = (item_generic)item.Content;
             ContentControl cursorVisual = new ContentControl()
             {
                 //Content = i2,
-                Content = item.Content,
+                Content = i3.get_clone(),
                 Style = FindResource("CursorStyle") as Style
             };
 

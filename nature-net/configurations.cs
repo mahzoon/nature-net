@@ -16,6 +16,8 @@ namespace nature_net
         public static string line_break = "\r\n";
         public static string log_file = "log";
 
+        public static int max_num_content_update = 12;
+
         public static int max_signup_frame = 5;
         public static int max_collection_frame = 5;
         public static int max_image_display_frame = 5;
@@ -27,6 +29,8 @@ namespace nature_net
         public static double drag_dy_dx_factor = 2.1;
         //public static double drag_dx_dy_factor = 1.0;
 
+        public static bool use_scatter_view = false;
+
         public static double drag_collection_theta = 5;
         public static double scroll_scale_factor = 5;
         public static int min_touch_points = 2;
@@ -37,7 +41,7 @@ namespace nature_net
         public static bool use_avatar_drag = false;
 
         public static List<Point> locations = new List<Point>();
-        public static int location_dot_diameter = 20;
+        public static int location_dot_diameter = 30;
 
         public static string current_directory = System.IO.Directory.GetCurrentDirectory() + "\\";
         public static string image_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\";

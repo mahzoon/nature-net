@@ -9,12 +9,14 @@ using System.Windows.Media;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media.Imaging;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace nature_net
 {
     public class window_manager
     {
         public static Canvas main_canvas;
+        public static ScatterView main_scatter_view;
         public static tab_control left_tab;
         public static tab_control right_tab;
 
@@ -117,12 +119,14 @@ namespace nature_net
             collection_listbox c_listbox = new collection_listbox();
             c_listbox.parent = frame;
             c_listbox.list_contributions_in_location(location_id);
-            content.initialize_contents(c_listbox);
+            //content.initialize_contents(c_listbox);
+            content.initialize_contents(c_listbox, Type.GetType("nature_net.Location"), location_id, frame);
             frame.window_content.Content = content;
+            content.list_all_comments();
 
             window_manager.collection_frames.Add(frame);
             open_window(frame, pos_x, pos_y);
-            frame.set_title("Contributions in: " + location);
+            frame.set_title("Contributions in " + location_id.ToString() + ": " + location);
         }
 
         public static void open_collection_window(string username, int userid, double pos_x, double pos_y)
@@ -226,15 +230,28 @@ namespace nature_net
 
         private static void open_window(window_frame frame, double pos_x, double pos_y)
         {
-            main_canvas.Children.Add(frame);
-            frame.IsManipulationEnabled = true;
-            frame.UpdateLayout();
+            if (configurations.use_scatter_view)
+            {
+                ScatterViewItem svi = new ScatterViewItem();
+                svi.Width = frame.Width;
+                svi.CanScale = false;
+                svi.Content = frame;
+                window_manager.main_scatter_view.Items.Add(svi);
+                frame.IsManipulationEnabled = true;
+                frame.UpdateLayout();
+            }
+            else
+            {
+                main_canvas.Children.Add(frame);
+                frame.IsManipulationEnabled = true;
+                frame.UpdateLayout();
 
-            if (pos_y > window_manager.main_canvas.ActualHeight - frame.ActualHeight)
-                pos_y = window_manager.main_canvas.ActualHeight - frame.ActualHeight;
-            TranslateTransform m = new TranslateTransform(pos_x, pos_y);
-            Matrix matrix = m.Value;
-            frame.RenderTransform = new MatrixTransform(matrix);
+                if (pos_y > window_manager.main_canvas.ActualHeight - frame.ActualHeight)
+                    pos_y = window_manager.main_canvas.ActualHeight - frame.ActualHeight;
+                TranslateTransform m = new TranslateTransform(pos_x, pos_y);
+                Matrix matrix = m.Value;
+                frame.RenderTransform = new MatrixTransform(matrix);
+            }
         }
 
         public static void close_window(window_frame frame)

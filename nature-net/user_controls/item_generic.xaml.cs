@@ -56,6 +56,18 @@ namespace nature_net.user_controls
                 ";" + this.user_desc.Content + ";" + this.desc.Content + ";" + c;
             return result;
         }
+
+        public item_generic get_clone()
+        {
+            item_generic i = new item_generic();
+            i.avatar.Source = this.avatar.Source;
+            i.username.Content = this.username.Content; i.user_desc.Content = this.user_desc.Content;
+            i.user_desc.Visibility = this.user_desc.Visibility;
+            i.desc.Content = this.desc.Content; i.content.Text = this.content.Text;
+            i.desc.Visibility = this.desc.Visibility;
+            i.content.Visibility = this.content.Visibility;
+            return i;
+        }
     }
 
     public delegate void manipulation_starting_handler(object sender, ManipulationStartingEventArgs e);

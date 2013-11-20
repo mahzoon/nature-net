@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.ComponentModel;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace nature_net.user_controls
 {
@@ -30,7 +31,7 @@ namespace nature_net.user_controls
             InitializeComponent();
 
             this.contribution_canvas.Height = 250;
-
+            this.contribution_canvas.IsManipulationEnabled = true;
             this.contribution_canvas.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(image_canvas_ManipulationStarting);
             this.contribution_canvas.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(image_canvas_ManipulationDelta);
 
@@ -90,6 +91,7 @@ namespace nature_net.user_controls
                     worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(show_image);
                     worker.RunWorkerAsync((object)i._contribution.id);
                 }
+                
             }
             if (i.is_video)
             {
@@ -108,13 +110,31 @@ namespace nature_net.user_controls
                 //the_media.Source = new Uri(configurations.GetAbsoluteContributionPath() + item._contribution.id.ToString() + ext);
                 the_media.Loaded += new RoutedEventHandler(the_media_Loaded);
             }
+
         }
+        
 
         void the_media_Loaded(object sender, RoutedEventArgs e)
         {
-            the_media.Visibility = System.Windows.Visibility.Visible;
-            the_image.Visibility = System.Windows.Visibility.Collapsed;
-            the_media.Play();
+            if (!configurations.use_scatter_view)
+            {
+                the_media.Visibility = System.Windows.Visibility.Visible;
+                the_image.Visibility = System.Windows.Visibility.Collapsed;
+                the_media.Play();
+            }
+            else
+            {
+                ScatterView sv = new ScatterView();
+                this.contribution_canvas.Children.Add(sv);
+                sv.Width = this.contribution_canvas.Width;
+                ScatterViewItem svi = new ScatterViewItem();
+                svi.CanMove = false;
+                MediaElement me = new MediaElement(); me.Source = the_media.Source;
+                //me.Loaded += new RoutedEventHandler(the_media_loaded);
+                svi.Content = me;
+                the_media.Visibility = System.Windows.Visibility.Hidden;
+                me.Play();
+            }
             //the_media.Width = the_media.NaturalVideoWidth;
             //the_media.Height = the_media.NaturalVideoHeight;
             //contribution_canvas.Width = the_media.Width;
@@ -174,10 +194,25 @@ namespace nature_net.user_controls
                     else
                         the_image.Source = window_manager.contributions[(int)e.Result];
                     the_image.UpdateLayout();
-                    var matrix = ((MatrixTransform)contribution_canvas.RenderTransform).Matrix;
-                    matrix.OffsetX = matrix.OffsetX + (contribution_canvas.ActualWidth / 2) - (the_image.ActualWidth / 2);
-                    matrix.OffsetY = matrix.OffsetY + (contribution_canvas.ActualHeight / 2) - (the_image.ActualHeight / 2);
-                    the_image.RenderTransform = new MatrixTransform(matrix);
+
+                    if (configurations.use_scatter_view)
+                    {
+                        ScatterView sv = new ScatterView();
+                        this.contribution_canvas.Children.Add(sv);
+                        sv.Width = this.contribution_canvas.ActualWidth;
+                        ScatterViewItem svi = new ScatterViewItem();
+                        svi.CanMove = false;
+                        Image img = new Image(); img.Source = the_image.Source.Clone();
+                        svi.Content = img;
+                        the_image.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else
+                    {
+                        var matrix = ((MatrixTransform)contribution_canvas.RenderTransform).Matrix;
+                        matrix.OffsetX = matrix.OffsetX + (contribution_canvas.ActualWidth / 2) - (the_image.ActualWidth / 2);
+                        matrix.OffsetY = matrix.OffsetY + (contribution_canvas.ActualHeight / 2) - (the_image.ActualHeight / 2);
+                        the_image.RenderTransform = new MatrixTransform(matrix);
+                    }
                 }));
         }
 

@@ -30,7 +30,9 @@
     <DockPanel LastChildFill="True" Name="application_panel">
         <uc:tab_control x:Name="left_tab" DockPanel.Dock="Left" Margin="0,0,0,0" Panel.ZIndex="1"></uc:tab_control>
         <uc:tab_control x:Name="right_tab" DockPanel.Dock="Right" Margin="0,0,0,0" Panel.ZIndex="2"></uc:tab_control>
-        <Canvas Name="workspace" AllowDrop="True" Margin="-55,0,-55,0" Panel.ZIndex="0"></Canvas>
+        <Canvas Name="workspace" AllowDrop="True" Margin="-55,0,-55,0" Panel.ZIndex="0">
+            <s:ScatterView Name="sv"></s:ScatterView>
+        </Canvas>
     </DockPanel>
     
 </s:SurfaceWindow>

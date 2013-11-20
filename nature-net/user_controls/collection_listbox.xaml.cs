@@ -401,7 +401,8 @@ namespace nature_net.user_controls
                 if (img == null)
                     return ci;
 
-                window_manager.thumbnails.Add(i, img);
+                if (!window_manager.thumbnails.ContainsKey(i))
+                    window_manager.thumbnails.Add(i, img);
                 // save the thumbnail
                 try
                 {
@@ -422,8 +423,7 @@ namespace nature_net.user_controls
             i2.Source = i;
             ContentControl cursorVisual = new ContentControl()
             {
-                //Content = i2,
-                Content = item.Content,
+                Content = i2,
                 Style = FindResource("CursorStyle") as Style
             };
 
