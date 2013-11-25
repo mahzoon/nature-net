@@ -60,6 +60,11 @@ namespace nature_net.user_controls
         void contributions_PreviewTouchMove(object sender, System.Windows.Input.TouchEventArgs e)
         {
             //if (parent == null) return;
+            if (!Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice))
+            {
+                e.Handled = true;
+                return;
+            }
 
             FrameworkElement findSource = e.OriginalSource as FrameworkElement;
             ListBoxItem element = null;
@@ -214,6 +219,11 @@ namespace nature_net.user_controls
 
         void contributions_TouchDown(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            if (!Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice))
+            {
+                e.Handled = true;
+                return;
+            }
             SurfaceScrollViewer scroll = configurations.GetDescendantByType(this.contributions, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
             last_scroll_offset = scroll.HorizontalOffset;
             bool r = e.TouchDevice.Capture(this.contributions as IInputElement, CaptureMode.SubTree);
@@ -242,6 +252,11 @@ namespace nature_net.user_controls
 
         void contributions_PreviewTouchUp(object sender, System.Windows.Input.TouchEventArgs e)
         {
+            if (!Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice))
+            {
+                e.Handled = true;
+                return;
+            }
             //TextBlock tm = new TextBlock(); tm.Foreground = Brushes.White;
             //Canvas.SetLeft(tm, 200); Canvas.SetTop(tm, debug_var);
             //tm.Text = "TOUCH UP"; tm.FontSize = 16; tm.FontWeight = FontWeights.Bold;
@@ -276,6 +291,14 @@ namespace nature_net.user_controls
             worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(display_all_contributions);
             if (!worker.IsBusy)
                 worker.RunWorkerAsync((object)location);
+        }
+
+        public void list_contributions_in_activity(int activity_id)
+        {
+            worker.DoWork += new DoWorkEventHandler(get_contributions_in_activity);
+            worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(display_all_contributions);
+            if (!worker.IsBusy)
+                worker.RunWorkerAsync((object)activity_id);
         }
 
         public void list_all_contributions(string username)
@@ -330,10 +353,15 @@ namespace nature_net.user_controls
                    {
                        Image img = new Image();
                        if (window_manager.thumbnails.ContainsKey(i._contribution.id))
+                       {
                            img.Source = window_manager.thumbnails[i._contribution.id];
+                           img.Tag = i;
+                       }
                        else
+                       {
                            img.Source = configurations.img_not_found_image_pic;
-                       img.Tag = i;
+                           img.Tag = null;
+                       }
                        this.contributions.Items.Add(img);
                    }
                    if (items.Count == 0)
@@ -368,6 +396,27 @@ namespace nature_net.user_controls
             e.Result = (object)items;
         }
 
+        public void get_contributions_in_activity(object arg, DoWorkEventArgs e)
+        {
+            naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
+            var result0 = from c0 in db.Collection_Contribution_Mappings
+                          where c0.Collection.activity_id == (int)e.Argument
+                          select c0.Contribution;
+            if (result0 == null)
+            {
+                e.Result = (object)(new List<collection_item>());
+                return;
+            }
+            List<Contribution> medias = result0.ToList<Contribution>();
+            List<collection_item> items = new List<collection_item>();
+            foreach (Contribution c in medias)
+            {
+                collection_item ci = create_collection_item_from_contribution(c);
+                items.Add(ci);
+            }
+            e.Result = (object)items;
+        }
+
         public collection_item create_collection_item_from_contribution(Contribution c)
         {
             collection_item ci = new collection_item();
@@ -379,7 +428,7 @@ namespace nature_net.user_controls
             string ext = fname.Substring(fname.Length - 4, 4);
             if (ext == ".jpg" || ext == ".bmp" || ext == ".png")
                 ci.is_image = true;
-            if (ext == ".wmv" || ext == ".mpg" || ext == "mpeg" || ext == ".avi" || ext == ".mp4")
+            if (ext == ".wmv" || ext == ".mpg" || ext == "mpeg" || ext == ".avi" || ext == ".mp4" || ext == ".3gp")
                 ci.is_video = true;
             if (ext == ".wav" || ext == ".mp3")
                 ci.is_audio = true;
@@ -388,7 +437,8 @@ namespace nature_net.user_controls
             {
                 if (!window_manager.downloaded_contributions.Contains(i))
                 {
-                    // download the file
+                    bool result = file_manager.download_file_from_googledirve(c.media_url, i);
+                    if (result) window_manager.downloaded_contributions.Add(i);
                 }
 
                 ImageSource img = null;

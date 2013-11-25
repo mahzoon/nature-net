@@ -128,6 +128,7 @@ namespace nature_net.user_controls
 
         void submit_comment_Click(object sender, RoutedEventArgs e)
         {
+            if (this.comment_textbox.Text == "") return;
             bool is_design_idea = hide_expander;
             if (is_design_idea)
             {
@@ -138,7 +139,7 @@ namespace nature_net.user_controls
                 idea.note = this.comment_textbox.Text;
                 db.Contributions.InsertOnSubmit(idea);
                 db.SubmitChanges();
-                int collection_id = get_or_create_collection(db, this.comment_user_id, 1);
+                int collection_id = configurations.get_or_create_collection(db, this.comment_user_id, 1, DateTime.Now);
                 Collection_Contribution_Mapping map = new Collection_Contribution_Mapping();
                 map.collection_id = collection_id;
                 map.contribution_id = idea.id;
@@ -226,32 +227,6 @@ namespace nature_net.user_controls
             comment_item i = new comment_item();
             i._object_id = this._object_id; i._object_type = this._object_type;
             this.comments_listbox.list_all_comments(i);
-        }
-
-        private int get_or_create_collection(naturenet_dataclassDataContext db, int user_id, int activity_id)
-        {
-            var r = from c in db.Collections
-                    where ((c.user_id == user_id) && c.activity_id == activity_id)
-                    orderby c.date descending
-                    select c;
-            if (r.Count() != 0)
-            {
-                foreach (Collection col in r)
-                {
-                    if (configurations.GetDate_Formatted(col.date) == configurations.GetCurrentDate_Formatted())
-                        return col.id;
-                }
-            }
-
-            // create new collection
-            Collection cl = new Collection();
-            cl.activity_id = activity_id;
-            cl.date = DateTime.Now;
-            cl.name = configurations.GetCurrentDate_Formatted();
-            cl.user_id = user_id;
-            db.Collections.InsertOnSubmit(cl);
-            db.SubmitChanges();
-            return cl.id;
         }
 
         public void UpdateKeyboardPosition()

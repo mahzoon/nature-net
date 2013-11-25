@@ -174,6 +174,7 @@ namespace nature_net.user_controls
                 db.Users.InsertOnSubmit(u);
                 db.SubmitChanges();
                 desc.Text = "Congratulations!";
+                file_manager.add_user_to_googledrive(u.id, u.name, u.avatar);
                 window_manager.load_users();
             }
             catch (Exception) { desc.Text = "Could not complete the operation."; }

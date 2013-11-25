@@ -39,15 +39,28 @@ namespace nature_net.user_controls
         private Point drag_direction1 = new Point(1, 0);
         private Point drag_direction2 = new Point(-1, 0);
 
+        private Dictionary<int, bool> is_tap = new Dictionary<int, bool>();
+
         public custom_listbox()
         {
             InitializeComponent();
             initialize_list();
+
+            if (configurations.high_contrast)
+            {
+                this._list.Background = Brushes.DarkGreen;
+                //this.Background = Brushes.Black;
+                //this.Background = Brushes.Green;
+            }
+            else
+            {
+                this._list.Background = Brushes.White;
+            }
         }
 
         public void initialize_list()
         {
-            this._list.SelectionChanged += new SelectionChangedEventHandler(_list_SelectionChanged);
+            //this._list.SelectionChanged += new SelectionChangedEventHandler(_list_SelectionChanged);
             if (!configurations.use_avatar_drag)
             {
                 SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
@@ -81,27 +94,46 @@ namespace nature_net.user_controls
 
             if (list_users)
             {
-                string username_id = "user;" + ((int)i.Tag).ToString() + ";" + (string)i.username.Content + ";" + i.avatar.Source.ToString();
+                string username_id = "user;" + ((int)i.Tag).ToString() + ";" + (string)i.username.Text + ";" + i.avatar.Source.ToString();
                 start_drag(element, username_id, touch_device, i.avatar.Source.Clone());
             }
             if (list_design_ideas)
             {
                 string idea = "design idea;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
-                    (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
+                    (string)i.username.Text + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
                     i.content.Text;
                 start_drag(element, idea, touch_device, i.avatar.Source.Clone());
             }
             if (list_comments)
             {
-                string idea = "comment;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
-                    (string)i.username.Content + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
+                string comment = "comment;" + ((int)i.Tag).ToString() + ";" + i.avatar.Source.ToString() + ";" +
+                    (string)i.username.Text + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
                     i.content.Text;
-                start_drag(element, idea, touch_device, i.avatar.Source.Clone());
+                start_drag(element, comment, touch_device, i.avatar.Source.Clone());
+            }
+            if (list_activities)
+            {
+                string avatar = "";
+                if (i.avatar.Source != null)
+                    avatar = i.avatar.Source.ToString();
+                string activity = "activity;" + ((int)i.Tag).ToString() + ";" + avatar + ";" +
+                    (string)i.username.Text + ";" + i.user_desc.Content + ";" + i.desc.Content + ";" +
+                    i.content.Text;
+                ImageSource img = null;
+                if (i.avatar.Source != null)
+                    img = i.avatar.Source.Clone();
+                start_drag(element, activity, touch_device, img);
             }
         }
 
         private void _list_PreviewTouchMove(object sender, TouchEventArgs e)
         {
+            if (!Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice))
+            {
+                e.Handled = true;
+                return;
+            }
+
             FrameworkElement findSource = e.OriginalSource as FrameworkElement;
             ListBoxItem element = null;
             while (element == null && findSource != null)
@@ -131,6 +163,7 @@ namespace nature_net.user_controls
                 }
                 else
                 {
+                    if (is_tap.ContainsKey(e.TouchDevice.Id)) is_tap[e.TouchDevice.Id] = false;
                     if (element == null) element = last_dragged_element;
                     if (element != null)
                     {
@@ -145,6 +178,8 @@ namespace nature_net.user_controls
             SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
             double dv = touch_points[touch_points.Count - 1].Position.Y - touch_points[0].Position.Y;
             //double new_offset = scroll.HorizontalOffset + (-1 * configurations.scroll_scale_factor * dx);
+            if (dv > configurations.tap_error)
+                if (is_tap.ContainsKey(e.TouchDevice.Id)) is_tap[e.TouchDevice.Id] = false;
             double new_offset = last_scroll_offset + (-1 * dv);
             try { scroll.ScrollToVerticalOffset(new_offset); }
             catch (Exception) { }
@@ -152,6 +187,13 @@ namespace nature_net.user_controls
 
         private void _list_PreviewTouchDown(object sender, TouchEventArgs e)
         {
+            if (!Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            this.is_tap.Add(e.TouchDevice.Id, true);
             SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
             last_scroll_offset = scroll.VerticalOffset;
             scroll.Elasticity = new Vector(0.0, 0.4);
@@ -161,23 +203,37 @@ namespace nature_net.user_controls
 
         private void _list_PreviewTouchUp(object sender, TouchEventArgs e)
         {
+            if (!Microsoft.Surface.Presentation.Input.TouchExtensions.GetIsFingerRecognized(e.TouchDevice))
+            {
+                e.Handled = true;
+                return;
+            }
+
             double dv = 0;
             if (touch_points.Count > 0)
                 dv = e.GetTouchPoint(this._list).Position.Y - touch_points[0].Position.Y;
-            if (dv < configurations.tap_error)
-            {
-                FrameworkElement findSource = e.OriginalSource as FrameworkElement;
-                ListBoxItem element = null;
-                while (element == null && findSource != null)
-                    if ((element = findSource as ListBoxItem) == null)
-                        findSource = VisualTreeHelper.GetParent(findSource) as FrameworkElement;
-                if (element != null)
-                {
-                    _list.SelectedItem = element;
-                    _list_SelectionChanged((item_generic)element.DataContext);
-                }
-            }
+            bool can_scroll = false;
+            if (!is_tap.ContainsKey(e.TouchDevice.Id))
+                can_scroll = true;
             else
+            {
+                if (is_tap[e.TouchDevice.Id])
+                {
+                    FrameworkElement findSource = e.OriginalSource as FrameworkElement;
+                    ListBoxItem element = null;
+                    while (element == null && findSource != null)
+                        if ((element = findSource as ListBoxItem) == null)
+                            findSource = VisualTreeHelper.GetParent(findSource) as FrameworkElement;
+                    if (element != null)
+                    {
+                        _list.SelectedItem = element;
+                        _list_SelectionChanged((item_generic)element.DataContext);
+                    }
+                }
+                else
+                    can_scroll = true;
+            }
+            if (can_scroll)
             {
                 SurfaceScrollViewer scroll = configurations.GetDescendantByType(this._list, typeof(SurfaceScrollViewer)) as SurfaceScrollViewer;
                 //double dv = e.GetTouchPoint(this.contributions).Position.X - touch_points[touch_points.Count - 1].Position.X;
@@ -189,7 +245,7 @@ namespace nature_net.user_controls
                 catch (Exception) { }
                 last_scroll_offset = scroll.VerticalOffset;
             }
-
+            is_tap.Remove(e.TouchDevice.Id);
             this.touch_points.Clear();
             consecutive_drag_points = 0;
             UIElement element2 = sender as UIElement;
@@ -216,7 +272,7 @@ namespace nature_net.user_controls
             }
             if (list_users)
             {
-                window_manager.open_collection_window((string)item.username.Content, (int)item.Tag,
+                window_manager.open_collection_window((string)item.username.Text, (int)item.Tag,
                     configurations.RANDOM(20, (int)(window_manager.main_canvas.ActualWidth - item.ActualWidth)),
                     item.PointToScreen(new Point(0, 0)).Y);
                 ///////window_manager.open_collections_balloon(item.PointToScreen(new Point(0, 0)).Y, (string)item.username.Content);
@@ -230,6 +286,16 @@ namespace nature_net.user_controls
                 //    configurations.RANDOM((int)(window_manager.main_canvas.ActualWidth - item.ActualWidth) - 20,
                 //    (int)(window_manager.main_canvas.ActualWidth - item.ActualWidth)),
                 //    item.PointToScreen(new Point(0, 0)).Y);
+                _list.SelectedIndex = -1;
+                return;
+            }
+            if (list_activities)
+            {
+                string[] activity_item = ("activity;" + item.ToString()).Split(new Char[] { ';' });
+                window_manager.open_activity_window(activity_item[3], Convert.ToInt32(activity_item[1]),
+                    configurations.RANDOM((int)(window_manager.main_canvas.ActualWidth - item.ActualWidth) - 20,
+                    (int)(window_manager.main_canvas.ActualWidth - item.ActualWidth)),
+                    item.PointToScreen(new Point(0, 0)).Y);
                 _list.SelectedIndex = -1;
                 return;
             }
@@ -320,7 +386,7 @@ namespace nature_net.user_controls
                     foreach (design_idea_item idea in ideas)
                     {
                         item_generic i = new item_generic();
-                        i.username.Content = idea.design_idea.name;
+                        i.username.Text = idea.design_idea.name;
                         //i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                         i.user_desc.Content = configurations.GetDate_Formatted(idea.design_idea.date);
                         i.desc.Content = "Contributed:";
@@ -329,6 +395,7 @@ namespace nature_net.user_controls
                         if (parent != null) i.Width = parent.Width - 10;
                         i.avatar.Source = idea.img;
                         i.Tag = idea.design_idea.id;
+                        i.Margin = new Thickness(0);
                         this._list.Items.Add(i);
                     }
                     this._list.Items.Refresh();
@@ -379,13 +446,13 @@ namespace nature_net.user_controls
                     foreach (user_item u in users)
                     {
                         item_generic i = new item_generic();
-                        i.username.Content = u.user.name;
+                        i.username.Text = u.user.name;
                         //i.user_desc.Content = u.email;
                         i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                         i.desc.Visibility = System.Windows.Visibility.Collapsed;
                         i.content.Visibility = System.Windows.Visibility.Collapsed;
                         i.avatar.Source = u.img;
-                        if (parent != null) i.Width = parent.Width;
+                        if (parent != null) i.Width = parent.Width - 10;
                         i.Tag = u.user.id;
                         if (configurations.use_avatar_drag) i.set_touchevent(this.avatar_drag);
                         this._list.Items.Add(i);
@@ -434,12 +501,12 @@ namespace nature_net.user_controls
                    foreach (Feedback c in comments)
                    {
                        item_generic i = new item_generic();
-                       i.username.Content = c.User.name;
+                       i.username.Text = c.User.name;
                        i.user_desc.Content = configurations.GetDate_Formatted(c.date);
                        //i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                        i.desc.Content = "Commented:";
                        i.content.Text = c.note;
-                       if (parent != null) i.Width = parent.Width;
+                       if (parent != null) i.Width = parent.Width - 10;
                        i.avatar.Source = new BitmapImage(new Uri(configurations.GetAbsoluteAvatarPath() + c.User.avatar));
                        i.Tag = c.id;
                        if (configurations.use_avatar_drag) i.set_touchevent(this.avatar_drag);
@@ -485,12 +552,14 @@ namespace nature_net.user_controls
                    foreach (Activity a in activities)
                    {
                        item_generic i = new item_generic();
-                       i.username.Content = a.name;
+                       i.username.Text = a.name;
                        i.user_desc.Content = configurations.GetDate_Formatted(a.creation_date);
                        //i.user_desc.Visibility = System.Windows.Visibility.Collapsed;
                        i.desc.Content = "Description:";
                        i.content.Text = a.description;
-                       if (parent != null) i.Width = parent.Width;
+                       if (parent != null) { i.Width = parent.ActualWidth - 55; }
+                       i.username.FontWeight = FontWeights.Bold;
+                       i.username.Width = i.username.Width + 30;
                        i.avatar.Visibility = System.Windows.Visibility.Collapsed;
                        //i.avatar.Source = new BitmapImage(new Uri(configurations.GetAbsoluteAvatarPath() + c.User.avatar));
                        i.Tag = a.id;

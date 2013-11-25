@@ -4,7 +4,7 @@
 winexe
 C#
 .cs
-C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\
 nature_net
 none
 false
@@ -12,8 +12,8 @@ DEBUG;TRACE
 
 12957424555
 
-27-232161177
-18-1386301576
+27835585833
+231680275069
 main_window.xaml;user_controls\collection_listbox.xaml;user_controls\custom_listbox.xaml;user_controls\design_ideas_listbox.xaml;user_controls\contribution_view.xaml;user_controls\item_generic.xaml;user_controls\signup.xaml;user_controls\tab_control.xaml;user_controls\users_listbox.xaml;user_controls\v_keyboard\virtual_keyboard.xaml;user_controls\window_content.xaml;user_controls\window_frame.xaml;
 
 False

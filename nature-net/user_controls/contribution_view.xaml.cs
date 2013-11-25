@@ -31,7 +31,7 @@ namespace nature_net.user_controls
             InitializeComponent();
 
             this.contribution_canvas.Height = 250;
-            this.contribution_canvas.IsManipulationEnabled = true;
+            //this.contribution_canvas.IsManipulationEnabled = true;
             this.contribution_canvas.ManipulationStarting += new EventHandler<ManipulationStartingEventArgs>(image_canvas_ManipulationStarting);
             this.contribution_canvas.ManipulationDelta += new EventHandler<ManipulationDeltaEventArgs>(image_canvas_ManipulationDelta);
 
@@ -168,7 +168,16 @@ namespace nature_net.user_controls
             int contribution_id = (int)e.Argument;
             if (!window_manager.downloaded_contributions.Contains(contribution_id))
             {
-                // download the file
+                naturenet_dataclassDataContext db = new naturenet_dataclassDataContext();
+                var result1 = from c in db.Contributions
+                              where c.id == contribution_id
+                              select c;
+                if (result1.Count() != 0)
+                {
+                    Contribution contrib = result1.First<Contribution>();
+                    bool result = file_manager.download_file_from_googledirve(contrib.media_url, contribution_id);
+                    if (result) window_manager.downloaded_contributions.Add(contribution_id);
+                }
             }
             try
             {

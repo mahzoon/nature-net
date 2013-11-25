@@ -29,6 +29,7 @@ namespace nature_net
         public static List<window_frame> signup_frames = new List<window_frame>();
         public static List<window_frame> design_ideas_frames = new List<window_frame>();
         public static List<window_frame> image_display_frames = new List<window_frame>();
+        public static List<window_frame> activity_frames = new List<window_frame>();
 
         public static Dictionary<string, ImageSource> avatars = new Dictionary<string, ImageSource>();
 
@@ -176,7 +177,7 @@ namespace nature_net
             item_generic i = new item_generic();
             i.avatar.Source = new BitmapImage(new Uri(idea_item[2]));
             i.avatar.Source.Freeze();
-            i.username.Content = idea_item[3]; i.user_desc.Content = idea_item[4];
+            i.username.Text = idea_item[3]; i.user_desc.Content = idea_item[4];
             i.desc.Content = idea_item[5];
             i.content.Text = idea_item[6];
             i.content.Foreground = Brushes.Black;
@@ -226,6 +227,28 @@ namespace nature_net
             frame.hide_change_view();
             frame.set_title("Sign up");
             frame.set_icon(configurations.img_signup_window_icon);
+        }
+
+        public static void open_activity_window(string activity_name, int activity_id, double pos_x, double pos_y)
+        {
+            if (window_manager.activity_frames.Count + 1 > configurations.max_activity_frame)
+                return;
+
+            window_frame frame = new window_frame();
+            window_content content = new window_content();
+            collection_listbox c_listbox = new collection_listbox();
+            c_listbox.parent = frame;
+            c_listbox.list_contributions_in_activity(activity_id);
+            content.initialize_contents(c_listbox, Type.GetType("nature_net.Activity"), activity_id, frame);
+            frame.window_content.Content = content;
+            content.list_all_comments();
+
+            window_manager.collection_frames.Add(frame);
+            open_window(frame, pos_x, pos_y);
+            string title = activity_name;
+            if (activity_name.Length > configurations.max_activity_frame_title_chars)
+                title = activity_name.Substring(0, 10) + "...";
+            frame.set_title(title + "'s contributions");
         }
 
         private static void open_window(window_frame frame, double pos_x, double pos_y)
@@ -301,6 +324,7 @@ namespace nature_net
                 left_tab.load_users();
             if (right_tab != null)
                 right_tab.load_users();
+            ///
         }
 
         public static void load_activities()

@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <s:SurfaceListBox Name="_list" DockPanel.Dock="Top" Background="White"
+    <s:SurfaceListBox Name="_list" DockPanel.Dock="Top"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
                  ScrollViewer.CanContentScroll="False" ScrollViewer.PanningMode="VerticalOnly">
     </s:SurfaceListBox>

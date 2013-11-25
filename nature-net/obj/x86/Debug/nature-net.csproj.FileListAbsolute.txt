@@ -47,3 +47,46 @@ C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\c
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\contribution_view.g.cs
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\signup.baml
 C:\Users\MJ\Documents\GitHub\nature-net\nature-net\obj\x86\Debug\user_controls\signup.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\nature-net.exe.config
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net.exe
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net.pdb
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\nature-net.exe
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\nature-net.pdb
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net.csprojResolveAssemblyReference.cache
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\collection_listbox.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\custom_listbox.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\contribution_view.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\item_generic.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\signup.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\v_keyboard\virtual_keyboard.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\window_frame.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\main_window.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\collection_listbox.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\custom_listbox.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\design_ideas_listbox.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\contribution_view.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\item_generic.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\signup.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\tab_control.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\users_listbox.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\v_keyboard\virtual_keyboard.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\window_content.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\window_frame.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net_MarkupCompile.cache
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net_MarkupCompile.lref
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\main_window.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\design_ideas_listbox.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\tab_control.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\users_listbox.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\user_controls\window_content.baml
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net.g.resources
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature_net.Properties.Resources.resources
+C:\NatureNet Source Code\Version 2.1\nature-net\obj\x86\Debug\nature-net.csproj.GenerateResource.Cache
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\DotNetOpenAuth.dll
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\Google.Apis.Authentication.OAuth2.dll
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\Google.Apis.dll
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\Google.Apis.Drive.v2.dll
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\Google.Apis.Oauth2.v2.dll
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\log4net.dll
+C:\NatureNet Source Code\Version 2.1\nature-net\bin\Debug\Newtonsoft.Json.Net35.dll

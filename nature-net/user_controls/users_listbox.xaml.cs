@@ -34,7 +34,7 @@ namespace nature_net.user_controls
             this.signup.user_desc.Visibility = System.Windows.Visibility.Collapsed;
             this.signup.content.Visibility = System.Windows.Visibility.Collapsed;
             this.signup.desc.Visibility = System.Windows.Visibility.Collapsed;
-            this.signup.username.Content = "Signup";
+            this.signup.username.Text = "Signup";
             this.signup.Background = new SolidColorBrush(Colors.LightGreen);
             this.signup.username.Foreground = new SolidColorBrush(Colors.White);
             this.signup.user_desc.Foreground = new SolidColorBrush(Colors.White);

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="nature-net" Class="naturenet_dataclassDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="AppSettings" ConnectionString="Data Source=MJ-PC\SQLEXPRESS;Initial Catalog=nature-net;Integrated Security=True" SettingsObjectName="nature_net.Properties.Settings" SettingsPropertyName="nature_netConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="AppSettings" ConnectionString="Data Source=CCISUR40-1WWS;Initial Catalog=nature-net;Integrated Security=True" SettingsObjectName="nature_net.Properties.Settings" SettingsPropertyName="nature_netConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Action_Type" Member="Action_Types">
     <Type Name="Action_Type">
       <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -60,21 +60,8 @@
       <Column Name="date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
       <Association Name="Collection_Collection_Contribution_Mapping" Member="Collection_Contribution_Mappings" ThisKey="id" OtherKey="collection_id" Type="Collection_Contribution_Mapping" />
-      <Association Name="Activity_Collection" Member="Activity" ThisKey="activity_id" OtherKey="id" Type="Activity" IsForeignKey="true" />
       <Association Name="User_Collection" Member="User" ThisKey="user_id" OtherKey="id" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.Activity" Member="Activities">
-    <Type Name="Activity">
-      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="name" Type="System.String" DbType="NVarChar(32) NOT NULL" CanBeNull="false" />
-      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Column Name="creation_date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
-      <Column Name="expire_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Column Name="location_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
-      <Association Name="Activity_Collection" Member="Collections" ThisKey="id" OtherKey="activity_id" Type="Collection" />
-      <Association Name="Location_Activity" Member="Location" ThisKey="location_id" OtherKey="id" Type="Location" IsForeignKey="true" />
+      <Association Name="Activity_Collection" Member="Activity" ThisKey="activity_id" OtherKey="id" Type="Activity" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.[User]" Member="Users">
@@ -132,6 +119,20 @@
       <Association Name="Feedback_Feedback" Member="Feedback1" ThisKey="parent_id" OtherKey="id" Type="Feedback" IsForeignKey="true" />
       <Association Name="Feedback_Type_Feedback" Member="Feedback_Type" ThisKey="type_id" OtherKey="id" Type="Feedback_Type" IsForeignKey="true" />
       <Association Name="User_Feedback" Member="User" ThisKey="user_id" OtherKey="id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Activity" Member="Activities">
+    <Type Name="Activity">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(32) NOT NULL" CanBeNull="false" />
+      <Column Name="avatar" Type="System.String" DbType="NVarChar(64)" CanBeNull="true" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="creation_date" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="expire_date" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="location_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="technical_info" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Association Name="Activity_Collection" Member="Collections" ThisKey="id" OtherKey="activity_id" Type="Collection" />
+      <Association Name="Location_Activity" Member="Location" ThisKey="location_id" OtherKey="id" Type="Location" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

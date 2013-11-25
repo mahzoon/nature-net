@@ -34,6 +34,12 @@ namespace nature_net.user_controls
             this.user_desc.FontFamily = new FontFamily("Segoe UI"); this.user_desc.FontSize = 12;
             this.desc.FontFamily = new FontFamily("Segoe UI"); this.desc.FontSize = 12;
             this.content.FontFamily = new FontFamily("Segoe UI"); this.content.FontSize = 12;
+
+            if (configurations.high_contrast)
+            {
+                this.Background = Brushes.Green;
+            }
+
         }
 
         public void set_touchevent(avatar_touch_down_handler touch_handler)
@@ -52,7 +58,7 @@ namespace nature_net.user_controls
             string source = "";
             if (this.avatar.Source != null)
                 source = this.avatar.Source.ToString();
-            string result = id + ";" + source + ";" + this.username.Content +
+            string result = id + ";" + source + ";" + this.username.Text +
                 ";" + this.user_desc.Content + ";" + this.desc.Content + ";" + c;
             return result;
         }
@@ -61,7 +67,7 @@ namespace nature_net.user_controls
         {
             item_generic i = new item_generic();
             i.avatar.Source = this.avatar.Source;
-            i.username.Content = this.username.Content; i.user_desc.Content = this.user_desc.Content;
+            i.username.Text = this.username.Text; i.user_desc.Content = this.user_desc.Content;
             i.user_desc.Visibility = this.user_desc.Visibility;
             i.desc.Content = this.desc.Content; i.content.Text = this.content.Text;
             i.desc.Visibility = this.desc.Visibility;

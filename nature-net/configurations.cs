@@ -16,12 +16,16 @@ namespace nature_net
         public static string line_break = "\r\n";
         public static string log_file = "log";
 
+        public static bool high_contrast = false;
+
         public static int max_num_content_update = 12;
 
         public static int max_signup_frame = 5;
         public static int max_collection_frame = 5;
         public static int max_image_display_frame = 5;
         public static int max_design_ideas_frame = 5;
+        public static int max_activity_frame = 5;
+        public static int max_activity_frame_title_chars = 10;
         //public static int thumbnail_pixel_width = 100;
         public static int thumbnail_pixel_height = 100;
         public static TimeSpan thumbnail_video_span = new TimeSpan(0, 0, 2);
@@ -41,13 +45,24 @@ namespace nature_net
         public static bool use_avatar_drag = false;
 
         public static List<Point> locations = new List<Point>();
-        public static int location_dot_diameter = 30;
+        public static int location_dot_diameter = 40;
+        public static Brush location_dot_color = Brushes.Crimson;
 
         public static string current_directory = System.IO.Directory.GetCurrentDirectory() + "\\";
         public static string image_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\";
         public static string avatar_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\avatars\\";
         public static string thumbnails_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\thumbnails\\";
         public static string contributions_directory = System.IO.Directory.GetCurrentDirectory() + "\\images\\contributions\\";
+        public static string googledrive_directory_id = "0B9mU-w_CpbztUUxtaXVIeE9SbWM";
+        public static string googledrive_client_id = "333780750675-ag76kpq3supbbqi3v92vn3ejil8ght23.apps.googleusercontent.com";
+        public static string googledrive_client_secret = "bCYIAfrAC0i-qIfl0cLRnhwn";
+        public static string googledrive_storage = "gdrive_uploader";
+        public static string googledrive_key = "z},drdzf11x9;87";
+        public static string googledrive_refresh_token = "1/jpJHu8br2TnnM5hwCqgFe-yagf6zixlDZrlUvdXZ9s8";
+        public static string googledrive_lastchange = "";
+
+        // 10KB = 10 * 1024
+        public static int download_buffer_size = 10240;
 
         public static string image_path = ".\\images\\";
         public static string avatar_path = ".\\images\\avatars\\";
@@ -231,6 +246,7 @@ namespace nature_net
             MediaPlayer _mediaPlayer = new MediaPlayer();
             _mediaPlayer.ScrubbingEnabled = true;
             _mediaPlayer.Open(new Uri(configurations.GetAbsoluteContributionPath() + filename));
+            _mediaPlayer.Play();
             _mediaPlayer.Pause();
             _mediaPlayer.Position = interval;
             System.Threading.Thread.Sleep(5 * 1000);
@@ -292,19 +308,164 @@ namespace nature_net
             return foundElement;
         }
 
+        public static string GetItemFromJSON(string whole, string key)
+        {
+            if (whole.Length < 3) return "";
+            string data = whole.Substring(1, whole.Length - 2);
+            string[] items = data.Split(new Char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in items)
+            {
+                string[] values = item.Split(new Char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                if (values.Count() < 2) continue;
+                if (values[0].Length < 3) continue;
+                string pkey = values[0].Substring(1, values[0].Length - 2);
+                if (pkey == key)
+                {
+                    string value = "";
+                    if (!values[1].Contains('"'))
+                    {
+                        value = values[1].Trim();
+                        return value;
+                    }
+                    if (values[1].Length < 3) return "";
+                    value = values[1].Substring(1, values[1].Length - 2);
+                    return value;
+                }
+            }
+            return "";
+        }
+
+        public static List<string> GetUserNameList_GDText(string text_file)
+        {
+            List<string> usernames = new List<string>();
+            string[] lines = text_file.Split(new Char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(new Char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Count() < 2) { usernames.Add(""); continue; }
+                string[] values = parts[1].Split(new Char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                if (values.Count() < 2) { usernames.Add(""); continue; }
+                usernames.Add(values[1].Trim());
+            }
+            return usernames;
+        }
+
+        public static List<string> GetAvatarList_GDText(string text_file)
+        {
+            List<string> avatars = new List<string>();
+            string[] lines = text_file.Split(new Char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(new Char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Count() < 3) { avatars.Add(""); continue; }
+                string[] values = parts[2].Split(new Char[] { '=' }, StringSplitOptions.RemoveEmptyEntries);
+                if (values.Count() < 2) { avatars.Add(""); continue; }
+                string value = values[1].Trim();
+                value = value.Substring(0, value.Length - 1);
+                if (value.Substring(value.Length - 4, 4) != ".png")
+                    value = value + ".png";
+                avatars.Add(value);
+            }
+            return avatars;
+        }
+
+        public static int get_or_create_collection(naturenet_dataclassDataContext db, int user_id, int activity_id, DateTime dt)
+        {
+            var r = from c in db.Collections
+                    where ((c.user_id == user_id) && c.activity_id == activity_id)
+                    orderby c.date descending
+                    select c;
+            if (r.Count() != 0)
+            {
+                foreach (Collection col in r)
+                {
+                    if (configurations.GetDate_Formatted(col.date) == configurations.GetDate_Formatted(dt))
+                        return col.id;
+                }
+            }
+
+            // create new collection
+            Collection cl = new Collection();
+            cl.activity_id = activity_id;
+            cl.date = dt;
+            cl.name = configurations.GetDate_Formatted(dt);
+            cl.user_id = user_id;
+            db.Collections.InsertOnSubmit(cl);
+            db.SubmitChanges();
+            return cl.id;
+        }
+
+        public static int get_or_create_collection(naturenet_dataclassDataContext db, string user_name, string avatar, int activity_id, DateTime dt)
+        {
+            int user_id =0;
+            var ru = from u in db.Users
+                     where u.name == user_name
+                     select u;
+            if (ru.Count() == 0)
+            {
+                User u0 = new User();
+                u0.name = user_name; u0.avatar = avatar;
+                u0.password = ""; u0.email = "";
+                db.Users.InsertOnSubmit(u0);
+                db.SubmitChanges();
+                user_id = u0.id;
+            }
+            else
+            {
+                user_id = ru.First<User>().id;
+            }
+
+            var r = from c in db.Collections
+                    where ((c.user_id == user_id) && c.activity_id == activity_id)
+                    orderby c.date descending
+                    select c;
+            if (r.Count() != 0)
+            {
+                foreach (Collection col in r)
+                {
+                    if (configurations.GetDate_Formatted(col.date) == configurations.GetDate_Formatted(dt))
+                        return col.id;
+                }
+            }
+
+            // create new collection
+            Collection cl = new Collection();
+            cl.activity_id = activity_id;
+            cl.date = dt;
+            cl.name = configurations.GetDate_Formatted(dt);
+            cl.user_id = user_id;
+            db.Collections.InsertOnSubmit(cl);
+            db.SubmitChanges();
+            return cl.id;
+        }
+
         public static void SetSettingsFromConfig(iniparser parser)
         {
-            Point p1 = new Point(120, 382); locations.Add(p1);
-            Point p2 = new Point(140, 420); locations.Add(p2);
-            Point p3 = new Point(290, 230); locations.Add(p3);
-            Point p4 = new Point(400, 300); locations.Add(p4);
-            Point p5 = new Point(405, 480); locations.Add(p5);
-            Point p6 = new Point(480, 595); locations.Add(p6);
-            Point p7 = new Point(515, 690); locations.Add(p7);
-            Point p8 = new Point(465, 755); locations.Add(p8);
-            Point p9 = new Point(415, 755); locations.Add(p9);
-            Point p10 = new Point(180, 545); locations.Add(p10);
-            Point p11 = new Point(150, 570); locations.Add(p11);
+            // locations in MJ's laptop
+            //Point p1 = new Point(120, 382); locations.Add(p1);
+            //Point p2 = new Point(140, 420); locations.Add(p2);
+            //Point p3 = new Point(290, 230); locations.Add(p3);
+            //Point p4 = new Point(400, 300); locations.Add(p4);
+            //Point p5 = new Point(405, 480); locations.Add(p5);
+            //Point p6 = new Point(480, 595); locations.Add(p6);
+            //Point p7 = new Point(515, 690); locations.Add(p7);
+            //Point p8 = new Point(465, 755); locations.Add(p8);
+            //Point p9 = new Point(415, 755); locations.Add(p9);
+            //Point p10 = new Point(180, 545); locations.Add(p10);
+            //Point p11 = new Point(150, 570); locations.Add(p11);
+
+            // locations in tabletop
+            Point p1 = new Point(453 - 240, 530 - 20); locations.Add(p1);
+            Point p2 = new Point(491 - 240, 577 - 20); locations.Add(p2);
+            Point p3 = new Point(751 - 240, 323 - 20); locations.Add(p3);
+            Point p4 = new Point(934 - 230, 406 - 15); locations.Add(p4);
+            Point p5 = new Point(949 - 240, 659 - 20); locations.Add(p5);
+            Point p6 = new Point(1083 - 230, 810 - 20); locations.Add(p6);
+            Point p7 = new Point(1149 - 240, 923 - 10); locations.Add(p7);
+            Point p8 = new Point(1057 - 230, 1021 - 10); locations.Add(p8);
+            Point p9 = new Point(965 - 230, 1018 - 10); locations.Add(p9);
+            Point p10 = new Point(555 - 240, 743 - 20); locations.Add(p10);
+            Point p11 = new Point(505 - 240, 776 - 20); locations.Add(p11);
 
             //locations.Add();
             //this.??? = parser.GetValue("Section","Key",default_value);

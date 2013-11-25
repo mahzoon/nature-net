@@ -13,6 +13,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Surface.Presentation;
 using Microsoft.Surface.Presentation.Controls;
+using Google.Apis.Drive.v2;
+using Google.Apis.Drive.v2.Data;
+using System.IO;
+using System.Drawing;
 
 namespace nature_net
 {
@@ -52,25 +56,40 @@ namespace nature_net
 
             application_panel.PreviewTouchDown += new EventHandler<TouchEventArgs>(application_panel_PreviewTouchDown);
             //application_panel.PreviewMouseDown += new MouseButtonEventHandler(application_panel_PreviewMouseDown);
+
+            System.Windows.Threading.DispatcherTimer update_changes_thread = new System.Windows.Threading.DispatcherTimer();
+            update_changes_thread.Tick += new EventHandler(update_changes);
+            update_changes_thread.Interval = new TimeSpan(0, 5, 0);
+            update_changes_thread.Start();
+            update_changes(null, null);
+        }
+
+        void update_changes(object sender, EventArgs e)
+        {
+            file_manager.retrieve_and_process_media_changes_from_googledrive();
+            this.left_tab.load_users();
+            this.left_tab.load_design_ideas();
+            this.right_tab.load_users();
+            this.right_tab.load_design_ideas();
         }
 
         void application_panel_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             //debug things!
-            //if (e.RightButton == MouseButtonState.Pressed)
-            //{
-            //    UIElement[] elements = new UIElement[window_manager.main_canvas.Children.Count];
-            //    window_manager.main_canvas.Children.CopyTo(elements, 0);
-            //    foreach (UIElement element in elements)
-            //    {
-            //        try
-            //        {
-            //            Shape shape = element as Shape;
-            //            window_manager.main_canvas.Children.Remove(shape);
-            //        }
-            //        catch (Exception) { continue; }
-            //    }
-            //}
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                UIElement[] elements = new UIElement[window_manager.main_canvas.Children.Count];
+                window_manager.main_canvas.Children.CopyTo(elements, 0);
+                foreach (UIElement element in elements)
+                {
+                    try
+                    {
+                        Shape shape = element as Shape;
+                        window_manager.main_canvas.Children.Remove(shape);
+                    }
+                    catch (Exception) { continue; }
+                }
+            }
         }
 
         void application_panel_PreviewTouchDown(object sender, TouchEventArgs e)
@@ -87,7 +106,7 @@ namespace nature_net
                 return;
             }
 
-            TouchPoint tp = e.GetTouchPoint(sender as IInputElement);
+            //TouchPoint tp = e.GetTouchPoint(sender as IInputElement);
             ////Point p = tp.Position;
             ////p.X = p.X - 245;
 
@@ -135,6 +154,13 @@ namespace nature_net
                     e.Cursor.GetPosition(sender as IInputElement).Y);
                 e.Handled = true;
             }
+            if (context == "activity")
+            {
+                if (data.Count() < 7) return;
+                window_manager.open_activity_window(data[3], Convert.ToInt32(data[1]), e.Cursor.GetPosition(sender as IInputElement).X,
+                    e.Cursor.GetPosition(sender as IInputElement).Y);
+                e.Handled = true;
+            }
         }
 
         void workspace_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
@@ -160,7 +186,7 @@ namespace nature_net
             if (element == null) return;
             Matrix matrix = ((MatrixTransform)element.RenderTransform).Matrix;
             ManipulationDelta deltaManipulation = e.DeltaManipulation;
-            Point center = new Point(element.ActualWidth / 2, element.ActualHeight / 2);
+            System.Windows.Point center = new System.Windows.Point(element.ActualWidth / 2, element.ActualHeight / 2);
             center = matrix.Transform(center);
             //matrix.ScaleAt(deltaManipulation.Scale.X, deltaManipulation.Scale.Y, center.X, center.Y); 
             matrix.RotateAt(e.DeltaManipulation.Rotation, e.ManipulationOrigin.X, e.ManipulationOrigin.Y);// center.X, center.Y);
@@ -188,10 +214,10 @@ namespace nature_net
             //this.application_panel.Background = b;
 
             int i = 1;
-            foreach (Point p in configurations.locations)
+            foreach (System.Windows.Point p in configurations.locations)
             {
                 Ellipse e = new Ellipse();
-                e.Fill = Brushes.Red;
+                e.Fill = configurations.location_dot_color;
                 e.Width = configurations.location_dot_diameter;
                 e.Height = configurations.location_dot_diameter;
                 Canvas.SetLeft(e, p.X);
@@ -200,7 +226,7 @@ namespace nature_net
                 e.PreviewTouchDown += new EventHandler<TouchEventArgs>(reddot_PreviewTouchDown);
                 workspace.Children.Add(e);
                 TextBlock tb = new TextBlock();
-                tb.Text = i.ToString();
+                tb.Text = i.ToString(); tb.FontWeight = FontWeights.Bold;
                 Canvas.SetLeft(tb, p.X + configurations.location_dot_diameter / 2 - 4);
                 Canvas.SetTop(tb, p.Y + configurations.location_dot_diameter / 2 - 8);
                 workspace.Children.Add(tb);
@@ -283,3 +309,4 @@ namespace nature_net
         }
     }
 }
+            
